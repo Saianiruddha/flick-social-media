@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Home | FLICK{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="home-hero text-center my-5">
+    <h1 class="fw-bold mb-3">Welcome to <span style="background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">FLICK</span></h1>
+    <p class="lead">
+        Share your moments instantly, connect with friends, and discover amazing content - all in a <em>flick</em>! ⚡
+    </p>
+    
+    <div class="mt-4">
+        {% if user.is_authenticated %}
+            <a href="{% url 'feed' %}" class="btn btn-light btn-lg me-2">Go to Feed</a>
+            <a href="{% url 'profile' user.username %}" class="btn btn-outline-light btn-lg">My Profile</a>
+        {% else %}
+            <a href="{% url 'signup' %}" class="btn btn-light btn-lg me-2">Get Started</a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">Login</a>
+        {% endif %}
+    </div>
+</div>
+
+<hr class="my-5">
+
+<!-- Features Section -->
+<div class="row text-center">
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">⚡ Quick Posts</h5>
+                <p class="card-text text-muted">Share your favorite moments with lightning-fast uploads and beautiful filters.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">💖 Instant Reactions</h5>
+                <p class="card-text text-muted">Double-tap for explosive heart animations and connect with your community.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">🎨 Dynamic Profile</h5>
+                <p class="card-text text-muted">Create your unique presence with animated avatars and personal style.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

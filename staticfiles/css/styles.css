@@ -1,0 +1,87 @@
+/* General */
+body {
+    background: linear-gradient(to right, #f2eeee, #ebedee); /* light gradient */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navbar */
+.navbar {
+    background: linear-gradient(45deg, #3223a6, #35c377, #419fd2, #ff99ac); /* Instagram-like gradient */
+}
+.navbar-brand {
+    font-family: 'Billabong', cursive;
+    font-size: 2rem;
+    color: white !important;
+}
+.nav-link {
+    color: white !important;
+    font-weight: 500;
+    transition: 0.3s;
+}
+.nav-link:hover {
+    color: #ffecec !important;
+}
+
+/* Cards */
+.card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Buttons */
+.btn-custom {
+    background: linear-gradient(45deg, #ff6a88, #ff99ac);
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 8px 16px;
+    transition: 0.3s;
+}
+.btn-custom:hover {
+    background: linear-gradient(45deg, #aa75ff, #ff7eb3);
+    color: white;
+}
+
+/* Profile */
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.profile-header img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 3px solid #ff758c;
+    object-fit: cover;
+    margin-right: 2rem;
+}
+.profile-header h2 {
+    font-weight: bold;
+    color: #ff6a88;
+}
+
+.profile-header img {
+    border: 3px solid #ddd;
+    object-fit: cover;
+}
+
+.profile-header h2 {
+    font-weight: 600;
+}
+
+.card img {
+    object-fit: cover;
+    height: 250px;
+}
+

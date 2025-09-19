@@ -1,0 +1,72 @@
+/* Center the login card vertically */
+body {
+    background: linear-gradient(135deg, #74ebd5, #9face6);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Login card */
+.card {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Card title */
+.card-body h3 {
+    font-weight: 600;
+    color: #333;
+}
+
+/* Inputs */
+.form-control {
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 15px;
+    transition: border 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #6c63ff;
+    box-shadow: 0 0 6px rgba(108, 99, 255, 0.4);
+}
+
+/* Button */
+.btn-primary {
+    background: #6c63ff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 500;
+    transition: background 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+    background: #5548d8;
+    transform: scale(1.02);
+}
+
+/* Links */
+a {
+    color: #6c63ff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Error message */
+.alert-danger {
+    border-radius: 10px;
+    font-size: 14px;
+}

@@ -1,0 +1,359 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load post_filters %}
+
+{% block title %}Home • Instagram{% endblock %}
+
+{% block content %}
+<div class="main-content">
+    <!-- Feed -->
+    <div class="feed-container">
+        {% for post in posts %}
+            <article class="post-card fade-in">
+                <!-- Post Header -->
+                <div class="post-header">
+                    <div class="post-avatar">
+                        {% if post.user.profile.profile_image %}
+                            <img src="{{ post.user.profile.profile_image.url }}" alt="{{ post.user.username }}">
+                        {% else %}
+                            <div class="avatar-initials">
+                                {{ post.user.username|first|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="post-user-info">
+                        <a href="{% url 'profile' username=post.user.username %}" class="post-username">
+                            {{ post.user.username }}
+                        </a>
+                        {% if post.user.profile.location %}
+                            <div class="post-location">{{ post.user.profile.location }}</div>
+                        {% endif %}
+                    </div>
+                    <button class="post-menu" onclick="toggleMenu({{ post.id }})">
+                        <i class="bi bi-three-dots"></i>
+                    </button>
+                </div>
+
+                <!-- Post Image -->
+                {% if post.image %}
+                    <div class="post-image">
+                        <img src="{{ post.image.url }}" alt="Post by {{ post.user.username }}">
+                    </div>
+                {% endif %}
+
+                <!-- Post Actions -->
+                <div class="post-actions">
+                    <div class="post-actions-left">
+                        <button class="action-btn like-btn" onclick="toggleLike({{ post.id }})" 
+                                data-post-id="{{ post.id }}" data-liked="{% if user in post.likes.all %}true{% else %}false{% endif %}">
+                            {% if user in post.likes.all %}
+                                <i class="bi bi-heart-fill" style="color: #ed4956;"></i>
+                            {% else %}
+                                <i class="bi bi-heart"></i>
+                            {% endif %}
+                        </button>
+                        <button class="action-btn" onclick="focusComment({{ post.id }})">
+                            <i class="bi bi-chat"></i>
+                        </button>
+                        <button class="action-btn">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </div>
+                    <button class="action-btn bookmark-btn" onclick="toggleBookmark({{ post.id }})">
+                        <i class="bi bi-bookmark"></i>
+                    </button>
+                </div>
+
+                <!-- Post Stats -->
+                <div class="post-stats">
+                    <div class="post-likes" id="likes-count-{{ post.id }}">
+                        {% if post.total_likes %}
+                            <strong>{{ post.total_likes }} like{{ post.total_likes|pluralize }}</strong>
+                        {% endif %}
+                    </div>
+                    
+                    {% if post.caption %}
+                        <div class="post-caption">
+                            <span class="username">{{ post.user.username }}</span>
+                            {{ post.caption }}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="post-time">
+                        {{ post.created_at|timesince }} ago
+                    </div>
+                </div>
+
+                <!-- Comments -->
+                <div class="post-comments">
+                    {% with post.comments.all|limit_comments:2 as recent_comments %}
+                        {% if post.comments.count > 2 %}
+                            <div class="view-comments" onclick="viewAllComments({{ post.id }})">
+                                View all {{ post.comments.count }} comments
+                            </div>
+                        {% endif %}
+                        
+                        {% for comment in recent_comments %}
+                            <div class="comment">
+                                <span class="username">{{ comment.user.username }}</span>
+                                <span class="comment-text">{{ comment.content }}</span>
+                            </div>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+
+                <!-- Comment Input -->
+                {% if user.is_authenticated %}
+                    <div class="comment-form">
+                        <input type="text" 
+                               class="form-control" 
+                               placeholder="Add a comment..." 
+                               id="comment-input-{{ post.id }}"
+                               onkeypress="handleCommentSubmit(event, {{ post.id }})">
+                        <button type="button" 
+                                class="comment-submit" 
+                                onclick="submitComment({{ post.id }})" 
+                                disabled
+                                id="comment-btn-{{ post.id }}">
+                            Post
+                        </button>
+                    </div>
+                {% endif %}
+            </article>
+        {% empty %}
+            <div class="empty-feed">
+                <div class="empty-icon">
+                    <i class="bi bi-camera" style="font-size: 48px; color: var(--text-secondary);"></i>
+                </div>
+                <h3>No posts yet</h3>
+                <p class="text-muted">When you follow people, you'll see their posts here.</p>
+                <a href="{% url 'create_post' %}" class="btn-primary">Share your first post</a>
+            </div>
+        {% endfor %}
+        
+        <!-- Pagination -->
+        {% if posts.has_other_pages %}
+            <div class="pagination-container">
+                {% if posts.has_previous %}
+                    <a href="?page={{ posts.previous_page_number }}" class="btn-outline">Previous</a>
+                {% endif %}
+                
+                <span class="page-info">
+                    Page {{ posts.number }} of {{ posts.paginator.num_pages }}
+                </span>
+                
+                {% if posts.has_next %}
+                    <a href="?page={{ posts.next_page_number }}" class="btn-outline">Next</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        {% if user.is_authenticated %}
+            <!-- User Info Card -->
+            <div class="suggestions-card">
+                <div class="suggestion-item" style="margin-bottom: 0;">
+                    <div class="suggestion-avatar">
+                        {% if user.profile.profile_image %}
+                            <img src="{{ user.profile.profile_image.url }}" alt="{{ user.username }}">
+                        {% else %}
+                            <div class="avatar-initials">
+                                {{ user.username|first|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="suggestion-info">
+                        <div class="suggestion-username">{{ user.username }}</div>
+                        <div class="suggestion-subtitle">{{ user.get_full_name|default:"" }}</div>
+                    </div>
+                    <a href="{% url 'profile' username=user.username %}" class="follow-btn">View Profile</a>
+                </div>
+            </div>
+
+            <!-- Suggestions -->
+            <div class="suggestions-card">
+                <div class="suggestions-header">
+                    <div class="suggestions-title">Suggested for you</div>
+                    <a href="#" class="follow-btn">See All</a>
+                </div>
+                
+                <!-- You can add suggested users here -->
+                <div class="suggestion-item">
+                    <div class="suggestion-avatar">
+                        <div class="avatar-initials">SU</div>
+                    </div>
+                    <div class="suggestion-info">
+                        <div class="suggestion-username">suggested_user</div>
+                        <div class="suggestion-subtitle">Suggested for you</div>
+                    </div>
+                    <button class="follow-btn">Follow</button>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="sidebar-footer" style="padding: var(--spacing-md); color: var(--text-secondary); font-size: 12px;">
+                <p>About • Help • Press • API • Jobs • Privacy • Terms</p>
+                <p>© 2024 InstaClone</p>
+            </div>
+        {% else %}
+            <!-- Login Prompt -->
+            <div class="suggestions-card">
+                <div class="suggestions-header">
+                    <div class="suggestions-title">Welcome to Instagram</div>
+                </div>
+                <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md);">Sign up to see photos and videos from friends.</p>
+                <a href="{% url 'signup' %}" class="btn-primary" style="width: 100%; margin-bottom: var(--spacing-sm);">Sign Up</a>
+                <a href="{% url 'login' %}" class="btn-outline" style="width: 100%;">Log In</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- JavaScript for interactivity -->
+<script>
+// Like functionality
+function toggleLike(postId) {
+    const btn = document.querySelector(`[data-post-id="${postId}"]`);
+    const icon = btn.querySelector('i');
+    const isLiked = btn.dataset.liked === 'true';
+    
+    // Add loading state
+    btn.classList.add('loading');
+    
+    fetch(`/posts/like/${postId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Update button state
+            btn.dataset.liked = data.liked.toString();
+            
+            // Update icon
+            if (data.liked) {
+                icon.className = 'bi bi-heart-fill';
+                icon.style.color = '#ed4956';
+                btn.classList.add('liked');
+            } else {
+                icon.className = 'bi bi-heart';
+                icon.style.color = '';
+                btn.classList.remove('liked');
+            }
+            
+            // Update likes count
+            const likesCount = document.getElementById(`likes-count-${postId}`);
+            if (data.likes_count > 0) {
+                likesCount.innerHTML = `<strong>${data.likes_count} like${data.likes_count > 1 ? 's' : ''}</strong>`;
+            } else {
+                likesCount.innerHTML = '';
+            }
+        }
+    })
+    .catch(error => console.error('Error:', error))
+    .finally(() => {
+        btn.classList.remove('loading');
+    });
+}
+
+// Comment functionality
+function handleCommentSubmit(event, postId) {
+    const input = event.target;
+    const btn = document.getElementById(`comment-btn-${postId}`);
+    
+    // Enable/disable submit button based on input
+    btn.disabled = input.value.trim().length === 0;
+    
+    // Submit on Enter
+    if (event.key === 'Enter' && !btn.disabled) {
+        submitComment(postId);
+    }
+}
+
+function submitComment(postId) {
+    const input = document.getElementById(`comment-input-${postId}`);
+    const content = input.value.trim();
+    
+    if (!content) return;
+    
+    fetch(`/posts/comment/${postId}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `content=${encodeURIComponent(content)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            // Clear input
+            input.value = '';
+            document.getElementById(`comment-btn-${postId}`).disabled = true;
+            
+            // Add new comment to the list
+            const commentsContainer = document.querySelector(`#post-${postId} .post-comments`);
+            const newComment = document.createElement('div');
+            newComment.className = 'comment';
+            newComment.innerHTML = `
+                <span class="username">${data.comment.user}</span>
+                <span class="comment-text">${data.comment.content}</span>
+            `;
+            commentsContainer.appendChild(newComment);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function focusComment(postId) {
+    document.getElementById(`comment-input-${postId}`).focus();
+}
+
+function toggleBookmark(postId) {
+    // Implement bookmark functionality
+    console.log('Toggle bookmark for post:', postId);
+}
+
+function toggleMenu(postId) {
+    // Implement post menu functionality
+    console.log('Toggle menu for post:', postId);
+}
+
+function viewAllComments(postId) {
+    window.location.href = `/posts/detail/${postId}/`;
+}
+
+// Utility function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Enable comment submit button when typing
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.comment-form input').forEach(input => {
+        input.addEventListener('input', function() {
+            const postId = this.id.split('-').pop();
+            const btn = document.getElementById(`comment-btn-${postId}`);
+            btn.disabled = this.value.trim().length === 0;
+        });
+    });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,61 @@
+/* ==============================
+   Logout Page Styling
+   ============================== */
+.logout-container {
+    text-align: center;
+    padding: 80px 20px;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Title */
+.logout-container h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ff4b5c; /* Vibrant red-pink for attention */
+    margin-bottom: 15px;
+}
+
+/* Subtitle */
+.logout-container p {
+    font-size: 1.1rem;
+    color: #6c757d;
+    margin-bottom: 30px;
+}
+
+/* Buttons */
+.logout-container .btn {
+    font-size: 1.1rem;
+    padding: 12px 24px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+/* Primary Button */
+.logout-container .btn-primary {
+    background: linear-gradient(45deg, #ff4b5c, #ff758c);
+    border: none;
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(255, 75, 92, 0.4);
+}
+
+.logout-container .btn-primary:hover {
+    background: linear-gradient(45deg, #ff758c, #ff4b5c);
+    transform: translateY(-2px);
+}
+
+/* Secondary Button */
+.logout-container .btn-outline-secondary {
+    border: 2px solid #6c757d;
+    color: #6c757d;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.logout-container .btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: #fff;
+}

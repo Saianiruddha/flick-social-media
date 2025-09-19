@@ -1,0 +1,291 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create new post • Instagram{% endblock %}
+
+{% block content %}
+<div style="min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: var(--spacing-lg) 0;">
+    <div style="width: 100%; max-width: 500px; padding: var(--spacing-md);">
+        <!-- Create Post Card -->
+        <div class="card" style="overflow: hidden;">
+            <!-- Header -->
+            <div style="padding: var(--spacing-md); border-bottom: 1px solid var(--border-light); text-align: center;">
+                <h2 style="margin: 0; font-size: 16px; font-weight: 600; color: var(--text-primary);">Create new post</h2>
+            </div>
+            
+            <!-- Post Creation Form -->
+            <form method="post" enctype="multipart/form-data" id="create-post-form">
+                {% csrf_token %}
+                
+                <!-- Image Upload Section -->
+                <div id="image-upload-section" style="padding: var(--spacing-xl); text-align: center; min-height: 300px; display: flex; flex-direction: column; justify-content: center; align-items: center; border-bottom: 1px solid var(--border-light);">
+                    <div id="upload-placeholder">
+                        <div style="margin-bottom: var(--spacing-lg);">
+                            <i class="bi bi-camera" style="font-size: 48px; color: var(--text-secondary);"></i>
+                        </div>
+                        <h3 style="font-size: 22px; font-weight: 300; color: var(--text-primary); margin-bottom: var(--spacing-sm);">
+                            Share photos and videos
+                        </h3>
+                        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-lg); font-size: 14px;">
+                            Select files from your computer
+                        </p>
+                        <label for="id_image" class="btn-primary" style="cursor: pointer; display: inline-block;">
+                            Select from computer
+                        </label>
+                        <input type="file" 
+                               name="image" 
+                               id="id_image" 
+                               accept="image/jpeg,image/jpg,image/png,image/webp"
+                               style="display: none;"
+                               onchange="previewImage(this)">
+                    </div>
+                    
+                    <!-- Image Preview -->
+                    <div id="image-preview" style="display: none;">
+                        <img id="preview-img" style="max-width: 100%; max-height: 400px; border-radius: var(--border-radius); object-fit: cover;">
+                        <div style="margin-top: var(--spacing-md);">
+                            <button type="button" onclick="changeImage()" class="btn-outline" style="margin-right: var(--spacing-sm);">Change Image</button>
+                            <button type="button" onclick="removeImage()" class="btn-outline" style="color: var(--accent-color); border-color: var(--accent-color);">Remove</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Caption Section -->
+                <div style="padding: var(--spacing-md);">
+                    <div style="display: flex; align-items: flex-start; gap: var(--spacing-md);">
+                        <!-- User Avatar -->
+                        <div style="width: 28px; height: 28px; flex-shrink: 0;">
+                            {% if user.profile.profile_image %}
+                                <img src="{{ user.profile.profile_image.url }}" alt="{{ user.username }}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                            {% else %}
+                                <div class="avatar-initials" style="width: 28px; height: 28px; font-size: 12px;">
+                                    {{ user.username|first|upper }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Caption Input -->
+                        <div style="flex: 1;">
+                            <textarea name="caption" 
+                                    id="id_caption"
+                                    placeholder="Write a caption..."
+                                    style="width: 100%; border: none; outline: none; resize: none; font-size: 16px; color: var(--text-primary); background: transparent; font-family: inherit; min-height: 120px;"
+                                    maxlength="2000"
+                                    onInput="updateCharCount(this)"></textarea>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--spacing-sm);">
+                                <div style="color: var(--text-secondary); font-size: 12px;">
+                                    <span id="char-count">0</span>/2,000
+                                </div>
+                                
+                                <!-- Emoji Button -->
+                                <button type="button" style="background: none; border: none; color: var(--text-secondary); font-size: 16px; cursor: pointer;" onclick="addEmoji()">
+                                    <i class="bi bi-emoji-smile"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Advanced Options (collapsed by default) -->
+                    <div style="margin-top: var(--spacing-lg);">
+                        <button type="button" onclick="toggleAdvanced()" style="background: none; border: none; color: var(--text-secondary); font-size: 14px; cursor: pointer; display: flex; align-items: center; gap: var(--spacing-xs);">
+                            <span>Advanced settings</span>
+                            <i class="bi bi-chevron-down" id="advanced-icon"></i>
+                        </button>
+                        
+                        <div id="advanced-options" style="display: none; margin-top: var(--spacing-md); padding-top: var(--spacing-md); border-top: 1px solid var(--border-light);">
+                            <div style="margin-bottom: var(--spacing-md);">
+                                <label style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+                                    <input type="checkbox" style="margin: 0;">
+                                    <span style="font-size: 14px; color: var(--text-primary);">Hide like and view counts on this post</span>
+                                </label>
+                            </div>
+                            
+                            <div style="margin-bottom: var(--spacing-md);">
+                                <label style="display: flex; align-items: center; gap: var(--spacing-sm); cursor: pointer;">
+                                    <input type="checkbox" style="margin: 0;">
+                                    <span style="font-size: 14px; color: var(--text-primary);">Turn off commenting</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div style="padding: var(--spacing-md); border-top: 1px solid var(--border-light); display: flex; justify-content: space-between; gap: var(--spacing-md);">
+                    <a href="{% url 'feed' %}" class="btn-outline" style="text-decoration: none; flex: 1; text-align: center;">Cancel</a>
+                    <button type="submit" class="btn-primary" style="flex: 2;" id="submit-btn" disabled>Share</button>
+                </div>
+            </form>
+            
+            <!-- Form Errors -->
+            {% if form.errors %}
+                <div style="padding: var(--spacing-md); background-color: #ffeaea; border-top: 1px solid #ed4956; color: #ed4956;">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <div style="font-size: 14px; margin-bottom: var(--spacing-xs);">{{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Tips -->
+        <div style="margin-top: var(--spacing-lg); text-align: center;">
+            <p style="color: var(--text-secondary); font-size: 12px; margin-bottom: var(--spacing-sm);">
+                <i class="bi bi-info-circle"></i> Your post will be visible to your followers
+            </p>
+            <p style="color: var(--text-secondary); font-size: 12px;">
+                Supported formats: JPG, JPEG, PNG, WEBP (max 5MB)
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+// Image preview functionality
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        
+        // Validate file size (5MB)
+        if (file.size > 5 * 1024 * 1024) {
+            alert('File size must be less than 5MB');
+            input.value = '';
+            return;
+        }
+        
+        // Validate file type
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            alert('Please select a valid image file (JPG, JPEG, PNG, WEBP)');
+            input.value = '';
+            return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-img').src = e.target.result;
+            document.getElementById('upload-placeholder').style.display = 'none';
+            document.getElementById('image-preview').style.display = 'block';
+            updateSubmitButton();
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function changeImage() {
+    document.getElementById('id_image').click();
+}
+
+function removeImage() {
+    document.getElementById('id_image').value = '';
+    document.getElementById('upload-placeholder').style.display = 'block';
+    document.getElementById('image-preview').style.display = 'none';
+    updateSubmitButton();
+}
+
+function updateCharCount(textarea) {
+    const count = textarea.value.length;
+    document.getElementById('char-count').textContent = count;
+    
+    // Change color when approaching limit
+    const countElement = document.getElementById('char-count').parentElement;
+    if (count > 1800) {
+        countElement.style.color = 'var(--accent-color)';
+    } else {
+        countElement.style.color = 'var(--text-secondary)';
+    }
+    
+    updateSubmitButton();
+}
+
+function updateSubmitButton() {
+    const hasImage = document.getElementById('id_image').value;
+    const hasCaption = document.getElementById('id_caption').value.trim();
+    const submitBtn = document.getElementById('submit-btn');
+    
+    // Enable submit if we have image OR caption
+    if (hasImage || hasCaption) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+    } else {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.5';
+    }
+}
+
+function toggleAdvanced() {
+    const options = document.getElementById('advanced-options');
+    const icon = document.getElementById('advanced-icon');
+    
+    if (options.style.display === 'none') {
+        options.style.display = 'block';
+        icon.className = 'bi bi-chevron-up';
+    } else {
+        options.style.display = 'none';
+        icon.className = 'bi bi-chevron-down';
+    }
+}
+
+function addEmoji() {
+    // Simple emoji insertion (you can enhance this with an emoji picker)
+    const emojis = ['😊', '❤️', '👍', '🎉', '📸', '🌟', '💫', '🔥'];
+    const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+    const textarea = document.getElementById('id_caption');
+    const cursorPos = textarea.selectionStart;
+    const textBefore = textarea.value.substring(0, cursorPos);
+    const textAfter = textarea.value.substring(cursorPos);
+    
+    textarea.value = textBefore + randomEmoji + textAfter;
+    textarea.setSelectionRange(cursorPos + randomEmoji.length, cursorPos + randomEmoji.length);
+    textarea.focus();
+    updateCharCount(textarea);
+}
+
+// Initialize character count and submit button state
+document.addEventListener('DOMContentLoaded', function() {
+    updateCharCount(document.getElementById('id_caption'));
+    
+    // Add input listeners
+    document.getElementById('id_caption').addEventListener('input', function() {
+        updateCharCount(this);
+    });
+});
+</script>
+
+<style>
+/* Create post specific styles */
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Drag and drop styles (for future enhancement) */
+#image-upload-section.drag-over {
+    background-color: var(--border-light);
+    border: 2px dashed var(--primary-color);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .card {
+        margin: 0 -var(--spacing-md);
+        border-radius: 0;
+    }
+    
+    #image-upload-section {
+        min-height: 250px;
+    }
+    
+    #id_caption {
+        font-size: 16px; /* Prevent zoom on iOS */
+    }
+}
+</style>
+{% endblock %}

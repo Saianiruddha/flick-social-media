@@ -1,0 +1,1269 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {% if query %}{{ query }}{% else %}Search{% endif %} • Instagram
+{% endblock %}
+
+{% block content %}
+<div class="search-container">
+    <!-- Search Header -->
+    <div class="search-header">
+        <div class="search-input-container">
+            <div class="search-input-wrapper">
+                <i class="bi bi-search search-icon"></i>
+                <input type="text" 
+                       id="search-input" 
+                       placeholder="Search" 
+                       value="{{ query|default:'' }}"
+                       autocomplete="off"
+                       spellcheck="false">
+                <button class="clear-search-btn" id="clear-search" style="display: none;">
+                    <i class="bi bi-x-circle-fill"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    <div class="search-results" id="search-results">
+        {% if query %}
+            <!-- Results for query -->
+            <div class="search-results-header">
+                <h3 class="results-title">Search results</h3>
+                <div class="results-count">
+                    {% if users or posts %}
+                        {{ users|length|add:posts|length }} result{{ users|length|add:posts|length|pluralize }}
+                    {% else %}
+                        No results found
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Users Section -->
+            {% if users %}
+            <div class="results-section">
+                <div class="section-header">
+                    <h4 class="section-title">
+                        <i class="bi bi-people-fill"></i>
+                        People
+                    </h4>
+                </div>
+                <div class="users-grid">
+                    {% for user in users %}
+                    <div class="user-result-item" data-url="{% url 'profile' user.username %}" style="cursor: pointer;">
+                        <div class="user-avatar">
+                            {% if user.profile.profile_image %}
+                                <img src="{{ user.profile.profile_image.url }}" alt="{{ user.username }}">
+                            {% else %}
+                                <div class="avatar-initials">
+                                    {{ user.username|first|upper }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="user-info">
+                            <div class="username">{{ user.username }}</div>
+                            {% if user.first_name or user.last_name %}
+                                <div class="full-name">{{ user.first_name }} {{ user.last_name }}</div>
+                            {% endif %}
+                            {% if user.profile.bio %}
+                                <div class="bio">{{ user.profile.bio|truncatechars:60 }}</div>
+                            {% endif %}
+                            <div class="followers-count">
+                                {{ user.followers.count }} follower{{ user.followers.count|pluralize }}
+                            </div>
+                        </div>
+                        {% if user != request.user and request.user.is_authenticated %}
+                            <div class="user-actions">
+                                <button class="follow-btn btn-outline" onclick="event.stopPropagation(); followUser('{{ user.username }}', this)">
+                                    {% if user in request.user.following.all %}
+                                        Following
+                                    {% else %}
+                                        Follow
+                                    {% endif %}
+                                </button>
+                            </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Posts Section -->
+            {% if posts %}
+            <div class="results-section">
+                <div class="section-header">
+                    <h4 class="section-title">
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
+                        Posts
+                    </h4>
+                </div>
+                <div class="posts-grid">
+                    {% for post in posts %}
+                    <div class="post-result-item" data-url="{% url 'post_detail' post.id %}" style="cursor: pointer;">
+                        <div class="post-image">
+                            {% if post.image %}
+                                <img src="{{ post.image.url }}" alt="Post by {{ post.user.username }}">
+                                <div class="post-overlay">
+                                    <div class="post-stats">
+                                        <span class="stat-item">
+                                            <i class="bi bi-heart-fill"></i>
+                                            {{ post.total_likes }}
+                                        </span>
+                                        <span class="stat-item">
+                                            <i class="bi bi-chat-fill"></i>
+                                            {{ post.comments.count }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="no-image-post">
+                                    <i class="bi bi-card-text"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="post-info">
+                            <div class="post-user">
+                                <div class="user-avatar-small">
+                                    {% if post.user.profile.profile_image %}
+                                        <img src="{{ post.user.profile.profile_image.url }}" alt="{{ post.user.username }}">
+                                    {% else %}
+                                        <div class="avatar-initials-small">
+                                            {{ post.user.username|first|upper }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <span class="username-small">{{ post.user.username }}</span>
+                                <span class="post-time">{{ post.created_at|timesince }} ago</span>
+                            </div>
+                            {% if post.caption %}
+                                <div class="post-caption">{{ post.caption|truncatechars:120 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- No Results -->
+            {% if not users and not posts %}
+            <div class="no-results">
+                <div class="no-results-icon">
+                    <i class="bi bi-search"></i>
+                </div>
+                <h3 class="no-results-title">No results found</h3>
+                <p class="no-results-text">
+                    Try searching for something else or check the spelling of what you typed.
+                </p>
+                <div class="no-results-suggestions">
+                    <p class="suggestions-title">Try searching for:</p>
+                    <div class="suggestion-tags">
+                        <span class="suggestion-tag" onclick="searchFor('photography')">#photography</span>
+                        <span class="suggestion-tag" onclick="searchFor('nature')">#nature</span>
+                        <span class="suggestion-tag" onclick="searchFor('travel')">#travel</span>
+                        <span class="suggestion-tag" onclick="searchFor('food')">#food</span>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+        {% else %}
+            <!-- Default Search State -->
+            <div class="search-explore">
+                <!-- Recent Searches -->
+                <div class="search-section" id="recent-searches-section" style="display: none;">
+                    <div class="section-header">
+                        <h4 class="section-title">Recent</h4>
+                        <button class="clear-all-btn" onclick="clearRecentSearches()">Clear all</button>
+                    </div>
+                    <div class="recent-searches" id="recent-searches-list">
+                        <!-- Recent searches will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Popular Hashtags -->
+                <div class="search-section">
+                    <div class="section-header">
+                        <h4 class="section-title">Popular hashtags</h4>
+                    </div>
+                    <div class="hashtags-grid">
+                        <div class="hashtag-item" onclick="searchFor('photography')">
+                            <div class="hashtag-icon">
+                                <i class="bi bi-camera-fill"></i>
+                            </div>
+                            <div class="hashtag-info">
+                                <div class="hashtag-name">#photography</div>
+                                <div class="hashtag-count">1.2M posts</div>
+                            </div>
+                        </div>
+                        <div class="hashtag-item" onclick="searchFor('nature')">
+                            <div class="hashtag-icon">
+                                <i class="bi bi-tree-fill"></i>
+                            </div>
+                            <div class="hashtag-info">
+                                <div class="hashtag-name">#nature</div>
+                                <div class="hashtag-count">856K posts</div>
+                            </div>
+                        </div>
+                        <div class="hashtag-item" onclick="searchFor('travel')">
+                            <div class="hashtag-icon">
+                                <i class="bi bi-airplane-fill"></i>
+                            </div>
+                            <div class="hashtag-info">
+                                <div class="hashtag-name">#travel</div>
+                                <div class="hashtag-count">2.1M posts</div>
+                            </div>
+                        </div>
+                        <div class="hashtag-item" onclick="searchFor('food')">
+                            <div class="hashtag-icon">
+                                <i class="bi bi-cup-hot-fill"></i>
+                            </div>
+                            <div class="hashtag-info">
+                                <div class="hashtag-name">#food</div>
+                                <div class="hashtag-count">734K posts</div>
+                            </div>
+                        </div>
+                        <div class="hashtag-item" onclick="searchFor('art')">
+                            <div class="hashtag-icon">
+                                <i class="bi bi-palette-fill"></i>
+                            </div>
+                            <div class="hashtag-info">
+                                <div class="hashtag-name">#art</div>
+                                <div class="hashtag-count">945K posts</div>
+                            </div>
+                        </div>
+                        <div class="hashtag-item" onclick="searchFor('fitness')">
+                            <div class="hashtag-icon">
+                                <i class="bi bi-heart-pulse-fill"></i>
+                            </div>
+                            <div class="hashtag-info">
+                                <div class="hashtag-name">#fitness</div>
+                                <div class="hashtag-count">623K posts</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Tips -->
+                <div class="search-tips">
+                    <div class="tip-item">
+                        <i class="bi bi-lightbulb"></i>
+                        <span>Search for people, hashtags, or posts</span>
+                    </div>
+                    <div class="tip-item">
+                        <i class="bi bi-at"></i>
+                        <span>Use @ to find specific users</span>
+                    </div>
+                    <div class="tip-item">
+                        <i class="bi bi-hash"></i>
+                        <span>Use # to discover topics</span>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Search Suggestions Dropdown -->
+    <div class="search-suggestions" id="search-suggestions" style="display: none;">
+        <div class="suggestions-list" id="suggestions-list">
+            <!-- Suggestions will be populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+<style>
+/* Modern Instagram-like Search Styles */
+.search-container {
+    max-width: 935px;
+    margin: 0 auto;
+    padding: var(--spacing-lg) var(--spacing-md);
+    min-height: 80vh;
+}
+
+/* Search Header */
+.search-header {
+    position: sticky;
+    top: 60px;
+    background: var(--bg-primary);
+    z-index: 100;
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-light);
+    margin-bottom: var(--spacing-lg);
+}
+
+.search-input-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-input-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.search-icon {
+    position: absolute;
+    left: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary);
+    font-size: 14px;
+    pointer-events: none;
+}
+
+#search-input {
+    width: 100%;
+    height: 40px;
+    padding: 0 40px 0 40px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+#search-input:focus {
+    border-color: var(--primary-color);
+    background: var(--bg-primary);
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: var(--spacing-md);
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px;
+    transition: color 0.2s ease;
+}
+
+.clear-search-btn:hover {
+    color: var(--text-primary);
+}
+
+/* Search Results Header */
+.search-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.results-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.results-count {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+/* Results Sections */
+.results-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.clear-all-btn {
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.clear-all-btn:hover {
+    color: var(--primary-hover);
+}
+
+/* Users Grid */
+.users-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.user-result-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    gap: var(--spacing-md);
+}
+
+.user-result-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+.user-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.user-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-initials {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+}
+
+.user-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.username {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.full-name {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+}
+
+.bio {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.followers-count {
+    font-size: 12px;
+    color: var(--text-tertiary);
+}
+
+.user-actions {
+    flex-shrink: 0;
+}
+
+.follow-btn {
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: 1px solid var(--border-medium);
+    background: transparent;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.follow-btn:hover {
+    background: var(--bg-secondary);
+}
+
+.follow-btn.following {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+/* Posts Grid */
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.post-result-item {
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+}
+
+.post-result-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.post-image {
+    position: relative;
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+}
+
+.post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-image-post {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-size: 48px;
+}
+
+.post-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    display: flex;
+    align-items: flex-end;
+    padding: var(--spacing-md);
+}
+
+.post-result-item:hover .post-overlay {
+    opacity: 1;
+}
+
+.post-stats {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.post-info {
+    padding: var(--spacing-md);
+}
+
+.post-user {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.user-avatar-small {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.user-avatar-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-initials-small {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: white;
+}
+
+.username-small {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.post-time {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-left: auto;
+}
+
+.post-caption {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: var(--spacing-xxl) var(--spacing-md);
+}
+
+.no-results-icon {
+    font-size: 64px;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.no-results-title {
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.no-results-text {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+}
+
+.no-results-suggestions {
+    margin-top: var(--spacing-lg);
+}
+
+.suggestions-title {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+}
+
+.suggestion-tags {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.suggestion-tag {
+    padding: 6px 12px;
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--primary-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.suggestion-tag:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Search Explore */
+.search-explore {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.search-section {
+    margin-bottom: var(--spacing-xxl);
+}
+
+/* Hashtags Grid */
+.hashtags-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.hashtag-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    gap: var(--spacing-md);
+}
+
+.hashtag-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+.hashtag-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.hashtag-info {
+    flex: 1;
+}
+
+.hashtag-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.hashtag-count {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Search Tips */
+.search-tips {
+    background: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    margin-top: var(--spacing-xl);
+}
+
+.tip-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.tip-item:last-child {
+    margin-bottom: 0;
+}
+
+.tip-item i {
+    color: var(--primary-color);
+    font-size: 16px;
+}
+
+/* Search Suggestions Dropdown */
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.suggestions-list {
+    padding: var(--spacing-sm) 0;
+}
+
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    cursor: pointer;
+    gap: var(--spacing-md);
+    transition: background-color 0.2s ease;
+}
+
+.suggestion-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+.suggestion-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.suggestion-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.suggestion-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.suggestion-username {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.suggestion-type {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+/* Recent Searches */
+.recent-searches {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.recent-search-item {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    gap: var(--spacing-md);
+}
+
+.recent-search-item:hover {
+    background-color: var(--bg-secondary);
+}
+
+.recent-search-icon {
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+.recent-search-text {
+    font-size: 14px;
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.recent-search-remove {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.recent-search-remove:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-container {
+        padding: var(--spacing-md);
+    }
+    
+    .posts-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: var(--spacing-md);
+    }
+    
+    .hashtags-grid {
+        gap: var(--spacing-sm);
+    }
+    
+    .hashtag-item {
+        padding: var(--spacing-sm);
+    }
+    
+    .user-result-item {
+        padding: var(--spacing-sm);
+    }
+    
+    .search-header {
+        top: 50px;
+    }
+}
+
+@media (max-width: 480px) {
+    .posts-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .suggestion-tags {
+        justify-content: flex-start;
+    }
+    
+    .no-results-icon {
+        font-size: 48px;
+    }
+    
+    .no-results-title {
+        font-size: 18px;
+    }
+}
+</style>
+
+<script>
+// Search functionality
+let searchTimeout;
+let currentSearchQuery = '';
+
+// Search input handling
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('search-input');
+    const clearBtn = document.getElementById('clear-search');
+    const suggestions = document.getElementById('search-suggestions');
+    
+    if (searchInput) {
+        // Show clear button if there's initial value
+        if (searchInput.value.length > 0) {
+            clearBtn.style.display = 'block';
+        }
+        
+        // Handle input changes
+        searchInput.addEventListener('input', function() {
+            const query = this.value.trim();
+            
+            if (query.length > 0) {
+                clearBtn.style.display = 'block';
+                
+                // Show suggestions after 300ms delay
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    if (query.length >= 2) {
+                        fetchSearchSuggestions(query);
+                    }
+                }, 300);
+            } else {
+                clearBtn.style.display = 'none';
+                hideSuggestions();
+            }
+        });
+        
+        // Handle enter key
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const query = this.value.trim();
+                if (query) {
+                    performSearch(query);
+                }
+            } else if (e.key === 'Escape') {
+                hideSuggestions();
+            }
+        });
+        
+        // Handle focus events
+        searchInput.addEventListener('focus', function() {
+            const query = this.value.trim();
+            if (query.length >= 2) {
+                fetchSearchSuggestions(query);
+            }
+            loadRecentSearches();
+        });
+        
+        searchInput.addEventListener('blur', function() {
+            // Delay hiding suggestions to allow clicks
+            setTimeout(() => hideSuggestions(), 200);
+        });
+    }
+    
+    // Clear search button
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            clearBtn.style.display = 'none';
+            hideSuggestions();
+            // Redirect to empty search page
+            window.location.href = '/posts/search/';
+        });
+    }
+    
+    // Load recent searches on page load
+    loadRecentSearches();
+});
+
+// Fetch search suggestions via AJAX
+function fetchSearchSuggestions(query) {
+    if (query === currentSearchQuery) return;
+    currentSearchQuery = query;
+    
+    fetch(`/posts/search/?q=${encodeURIComponent(query)}`, {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        showSuggestions(data, query);
+    })
+    .catch(error => {
+        console.error('Search error:', error);
+    });
+}
+
+// Show search suggestions
+function showSuggestions(data, query) {
+    const suggestions = document.getElementById('search-suggestions');
+    const suggestionsList = document.getElementById('suggestions-list');
+    
+    if (!suggestions || !suggestionsList) return;
+    
+    let html = '';
+    
+    // Add users
+    if (data.users && data.users.length > 0) {
+        data.users.slice(0, 5).forEach(user => {
+            html += `
+                <div class="suggestion-item" onclick="goToProfile('${user.username}')">
+                    <div class="suggestion-avatar">
+                        ${user.profile_image ? 
+                            `<img src="${user.profile_image}" alt="${user.username}">` :
+                            `<div class="avatar-initials">${user.username[0].toUpperCase()}</div>`
+                        }
+                    </div>
+                    <div class="suggestion-info">
+                        <div class="suggestion-username">${user.username}</div>
+                        <div class="suggestion-type">${user.full_name || 'User'}</div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    
+    // Add posts
+    if (data.posts && data.posts.length > 0) {
+        data.posts.slice(0, 3).forEach(post => {
+            html += `
+                <div class="suggestion-item" onclick="goToPost(${post.id})">
+                    <div class="suggestion-avatar">
+                        <i class="bi bi-card-text"></i>
+                    </div>
+                    <div class="suggestion-info">
+                        <div class="suggestion-username">Post by @${post.user}</div>
+                        <div class="suggestion-type">${post.caption}</div>
+                    </div>
+                </div>
+            `;
+        });
+    }
+    
+    if (html) {
+        suggestionsList.innerHTML = html;
+        suggestions.style.display = 'block';
+    } else {
+        hideSuggestions();
+    }
+}
+
+// Hide search suggestions
+function hideSuggestions() {
+    const suggestions = document.getElementById('search-suggestions');
+    if (suggestions) {
+        suggestions.style.display = 'none';
+    }
+}
+
+// Perform search
+function performSearch(query) {
+    if (query.trim()) {
+        // Save to recent searches
+        saveRecentSearch(query);
+        
+        // Navigate to search results
+        window.location.href = `/posts/search/?q=${encodeURIComponent(query)}`;
+    }
+}
+
+// Search for specific term
+function searchFor(term) {
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+        searchInput.value = term;
+    }
+    performSearch(term);
+}
+
+// Navigate to profile
+function goToProfile(username) {
+    saveRecentSearch(username);
+    window.location.href = `/profile/${username}/`;
+}
+
+// Navigate to post
+function goToPost(postId) {
+    window.location.href = `/posts/detail/${postId}/`;
+}
+
+// Recent searches functionality
+function saveRecentSearch(query) {
+    let recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+    
+    // Remove if exists
+    recentSearches = recentSearches.filter(search => search !== query);
+    
+    // Add to beginning
+    recentSearches.unshift(query);
+    
+    // Keep only last 10
+    recentSearches = recentSearches.slice(0, 10);
+    
+    localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+}
+
+function loadRecentSearches() {
+    const recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+    const recentSection = document.getElementById('recent-searches-section');
+    const recentList = document.getElementById('recent-searches-list');
+    
+    if (recentSearches.length > 0 && recentSection && recentList) {
+        let html = '';
+        recentSearches.forEach(search => {
+            html += `
+                <div class="recent-search-item">
+                    <i class="bi bi-clock-history recent-search-icon"></i>
+                    <span class="recent-search-text" onclick="searchFor('${search}')">${search}</span>
+                    <button class="recent-search-remove" onclick="removeRecentSearch('${search}')">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </div>
+            `;
+        });
+        recentList.innerHTML = html;
+        recentSection.style.display = 'block';
+    } else if (recentSection) {
+        recentSection.style.display = 'none';
+    }
+}
+
+function removeRecentSearch(query) {
+    let recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+    recentSearches = recentSearches.filter(search => search !== query);
+    localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+    loadRecentSearches();
+}
+
+function clearRecentSearches() {
+    localStorage.removeItem('recentSearches');
+    loadRecentSearches();
+}
+
+// Follow user functionality
+function followUser(username, button) {
+    if (!button) return;
+    
+    const isFollowing = button.textContent.trim() === 'Following';
+    const originalText = button.textContent;
+    
+    // Show loading state
+    button.disabled = true;
+    button.textContent = 'Loading...';
+    
+    fetch(`/posts/follow/${username}/`, {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRFToken': getCsrfToken()
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            button.textContent = data.is_following ? 'Following' : 'Follow';
+            if (data.is_following) {
+                button.classList.add('following');
+            } else {
+                button.classList.remove('following');
+            }
+        } else {
+            button.textContent = originalText;
+            alert(data.message || 'An error occurred');
+        }
+    })
+    .catch(error => {
+        console.error('Follow error:', error);
+        button.textContent = originalText;
+        alert('An error occurred while processing your request.');
+    })
+    .finally(() => {
+        button.disabled = false;
+    });
+}
+
+// Get CSRF token
+function getCsrfToken() {
+    const csrfInput = document.querySelector('[name=csrfmiddlewaretoken]');
+    if (csrfInput) {
+        return csrfInput.value;
+    }
+    
+    // Fallback: try to get from cookie
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'csrftoken') {
+            return value;
+        }
+    }
+    
+    return '';
+}
+
+// Handle clicks on user and post result items
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle user result item clicks
+    document.addEventListener('click', function(e) {
+        const userItem = e.target.closest('.user-result-item[data-url]');
+        if (userItem && !e.target.closest('button')) {
+            window.location.href = userItem.getAttribute('data-url');
+        }
+        
+        const postItem = e.target.closest('.post-result-item[data-url]');
+        if (postItem && !e.target.closest('button')) {
+            window.location.href = postItem.getAttribute('data-url');
+        }
+    });
+});
+</script>
+
+{% endblock %}

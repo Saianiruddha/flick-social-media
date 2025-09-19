@@ -1,0 +1,663 @@
+/* ========================================
+   FLICK - Modern Social Media Theme CSS
+   Dynamic, Quick, and Engaging Design
+   ======================================== */
+
+/* CSS Variables for FLICK Theme */
+:root {
+  /* FLICK Color Palette - Energetic & Modern */
+  --flick-primary: #FF6B6B;          /* Energetic coral red */
+  --flick-secondary: #4ECDC4;         /* Fresh teal */
+  --flick-accent: #45B7D1;           /* Vibrant blue */
+  --flick-warning: #FFA726;          /* Warm orange */
+  --flick-success: #66BB6A;          /* Fresh green */
+  --flick-purple: #AB47BC;           /* Modern purple */
+  
+  /* FLICK Gradients */
+  --flick-gradient-primary: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+  --flick-gradient-secondary: linear-gradient(135deg, #45B7D1 0%, #AB47BC 100%);
+  --flick-gradient-warm: linear-gradient(135deg, #FFA726 0%, #FF6B6B 100%);
+  --flick-gradient-cool: linear-gradient(135deg, #4ECDC4 0%, #45B7D1 100%);
+  
+  /* Base Colors */
+  --flick-text-primary: #2C3E50;
+  --flick-text-secondary: #7F8C8D;
+  --flick-text-light: #BDC3C7;
+  --flick-background: #F8F9FA;
+  --flick-surface: #FFFFFF;
+  --flick-border: #E9ECEF;
+  --flick-border-light: #F1F3F4;
+  --flick-shadow: rgba(0, 0, 0, 0.08);
+  --flick-shadow-medium: rgba(0, 0, 0, 0.12);
+  --flick-shadow-strong: rgba(0, 0, 0, 0.16);
+  
+  /* Dark Mode Colors */
+  --flick-dark-bg: #0F0F0F;
+  --flick-dark-surface: #1A1A1A;
+  --flick-dark-border: #333333;
+  --flick-dark-text-primary: #FFFFFF;
+  --flick-dark-text-secondary: #B0B0B0;
+  
+  /* Spacing & Layout */
+  --flick-radius: 12px;
+  --flick-radius-lg: 16px;
+  --flick-radius-xl: 24px;
+  --flick-spacing-xs: 4px;
+  --flick-spacing-sm: 8px;
+  --flick-spacing-md: 16px;
+  --flick-spacing-lg: 24px;
+  --flick-spacing-xl: 32px;
+  --flick-spacing-xxl: 48px;
+  
+  /* Animation & Transitions */
+  --flick-transition: all 0.2s cubic-bezier(0.4, 0.0, 0.2, 1);
+  --flick-transition-fast: all 0.15s cubic-bezier(0.4, 0.0, 0.2, 1);
+  --flick-transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  background: var(--flick-background);
+  color: var(--flick-text-primary);
+  line-height: 1.6;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: var(--flick-transition);
+}
+
+/* FLICK Brand Typography */
+.navbar-brand {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 32px !important;
+  font-weight: 700 !important;
+  background: var(--flick-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -1px;
+  margin-right: var(--flick-spacing-xl);
+  position: relative;
+  animation: flick-brand-glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes flick-brand-glow {
+  0% { 
+    filter: drop-shadow(0 0 0px rgba(255, 107, 107, 0.5));
+    transform: scale(1);
+  }
+  100% { 
+    filter: drop-shadow(0 0 8px rgba(255, 107, 107, 0.3));
+    transform: scale(1.02);
+  }
+}
+
+/* Modern FLICK Navbar */
+.navbar {
+  background: rgba(248, 249, 250, 0.95) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--flick-border);
+  padding: var(--flick-spacing-md) 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 20px var(--flick-shadow);
+}
+
+.navbar-nav .nav-link {
+  color: var(--flick-text-primary) !important;
+  font-weight: 500;
+  padding: var(--flick-spacing-sm) var(--flick-spacing-md) !important;
+  margin: 0 var(--flick-spacing-xs);
+  border-radius: var(--flick-radius);
+  transition: var(--flick-transition-bounce);
+  display: flex;
+  align-items: center;
+  gap: var(--flick-spacing-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.navbar-nav .nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--flick-gradient-cool);
+  opacity: 0;
+  transition: var(--flick-transition);
+  z-index: -1;
+}
+
+.navbar-nav .nav-link:hover {
+  color: white !important;
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 15px var(--flick-shadow-medium);
+}
+
+.navbar-nav .nav-link:hover::before {
+  left: 0;
+  opacity: 1;
+}
+
+.navbar-nav .nav-link i {
+  font-size: 20px;
+  transition: var(--flick-transition-fast);
+}
+
+.navbar-nav .nav-link:hover i {
+  transform: scale(1.1);
+}
+
+/* FLICK Search Bar */
+.search-form .form-control {
+  background: var(--flick-surface);
+  border: 2px solid var(--flick-border);
+  border-radius: var(--flick-radius-lg);
+  padding: var(--flick-spacing-sm) var(--flick-spacing-md);
+  font-size: 14px;
+  font-weight: 500;
+  transition: var(--flick-transition);
+  height: 40px;
+  box-shadow: 0 2px 8px var(--flick-shadow);
+}
+
+.search-form .form-control:focus {
+  border-color: var(--flick-primary);
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1), 0 4px 12px var(--flick-shadow-medium);
+  transform: translateY(-1px);
+}
+
+.search-form .btn {
+  background: var(--flick-gradient-primary);
+  border: none;
+  color: white;
+  border-radius: var(--flick-radius-lg);
+  padding: 0 var(--flick-spacing-md);
+  height: 40px;
+  transition: var(--flick-transition-bounce);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+}
+
+.search-form .btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+}
+
+/* FLICK Post Cards */
+.post-card {
+  background: var(--flick-surface);
+  border: 1px solid var(--flick-border);
+  border-radius: var(--flick-radius-lg);
+  margin-bottom: var(--flick-spacing-xl);
+  overflow: hidden;
+  transition: var(--flick-transition);
+  box-shadow: 0 4px 12px var(--flick-shadow);
+  position: relative;
+}
+
+.post-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--flick-gradient-primary);
+  opacity: 0;
+  transition: var(--flick-transition);
+}
+
+.post-card:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 12px 30px var(--flick-shadow-medium);
+  border-color: var(--flick-primary);
+}
+
+.post-card:hover::before {
+  opacity: 1;
+}
+
+/* FLICK Post Header */
+.post-header {
+  display: flex;
+  align-items: center;
+  padding: var(--flick-spacing-md);
+  border-bottom: 1px solid var(--flick-border-light);
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 107, 107, 0.02) 50%, transparent 100%);
+}
+
+.post-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: var(--flick-spacing-sm);
+  border: 3px solid transparent;
+  background: var(--flick-gradient-primary);
+  padding: 2px;
+  transition: var(--flick-transition-bounce);
+}
+
+.post-avatar:hover {
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+}
+
+.post-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post-username {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--flick-text-primary);
+  text-decoration: none;
+  transition: var(--flick-transition-fast);
+}
+
+.post-username:hover {
+  color: var(--flick-primary);
+  text-decoration: none;
+}
+
+/* FLICK Post Image */
+.post-image {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.post-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--flick-transition);
+}
+
+.post-image:hover img {
+  transform: scale(1.05);
+}
+
+.post-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--flick-gradient-primary);
+  opacity: 0;
+  transition: var(--flick-transition);
+  mix-blend-mode: multiply;
+}
+
+.post-image:hover::after {
+  opacity: 0.1;
+}
+
+/* FLICK Action Buttons */
+.action-btn {
+  background: none;
+  border: none;
+  color: var(--flick-text-primary);
+  font-size: 24px;
+  cursor: pointer;
+  padding: var(--flick-spacing-sm);
+  border-radius: 50%;
+  transition: var(--flick-transition-bounce);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: var(--flick-gradient-primary);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: var(--flick-transition);
+  z-index: -1;
+  opacity: 0.1;
+}
+
+.action-btn:hover {
+  transform: scale(1.2);
+  color: var(--flick-primary);
+}
+
+.action-btn:hover::before {
+  width: 40px;
+  height: 40px;
+}
+
+.action-btn.liked {
+  color: var(--flick-primary);
+  animation: flick-heart-pulse 0.6s ease-in-out;
+}
+
+@keyframes flick-heart-pulse {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.3); }
+  50% { transform: scale(1.1); }
+  75% { transform: scale(1.25); }
+  100% { transform: scale(1); }
+}
+
+/* FLICK Buttons */
+.btn-primary {
+  background: var(--flick-gradient-primary);
+  border: none;
+  color: white;
+  padding: var(--flick-spacing-sm) var(--flick-spacing-lg);
+  border-radius: var(--flick-radius-lg);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--flick-transition-bounce);
+  text-transform: none;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: var(--flick-transition);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--flick-primary);
+  color: var(--flick-primary);
+  padding: var(--flick-spacing-sm) var(--flick-spacing-lg);
+  border-radius: var(--flick-radius-lg);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--flick-transition-bounce);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-outline::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: var(--flick-gradient-primary);
+  transition: var(--flick-transition);
+  z-index: -1;
+}
+
+.btn-outline:hover {
+  color: white;
+  border-color: transparent;
+  transform: translateY(-2px);
+}
+
+.btn-outline:hover::before {
+  left: 0;
+}
+
+/* FLICK Form Controls */
+.form-control {
+  background: var(--flick-surface);
+  border: 2px solid var(--flick-border);
+  border-radius: var(--flick-radius);
+  padding: var(--flick-spacing-md);
+  font-size: 14px;
+  color: var(--flick-text-primary);
+  transition: var(--flick-transition);
+  width: 100%;
+  font-weight: 500;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: var(--flick-primary);
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+  transform: translateY(-1px);
+}
+
+/* FLICK Dark Mode */
+.dark-mode {
+  --flick-background: var(--flick-dark-bg);
+  --flick-surface: var(--flick-dark-surface);
+  --flick-border: var(--flick-dark-border);
+  --flick-border-light: #2A2A2A;
+  --flick-text-primary: var(--flick-dark-text-primary);
+  --flick-text-secondary: var(--flick-dark-text-secondary);
+  --flick-text-light: #808080;
+  --flick-shadow: rgba(255, 255, 255, 0.05);
+  --flick-shadow-medium: rgba(255, 255, 255, 0.08);
+  --flick-shadow-strong: rgba(255, 255, 255, 0.12);
+}
+
+.dark-mode .navbar {
+  background: rgba(15, 15, 15, 0.95) !important;
+  border-bottom-color: var(--flick-dark-border);
+}
+
+/* FLICK Loading Animation */
+.flick-loader {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--flick-gradient-primary);
+  animation: flick-spin 1s linear infinite;
+  position: relative;
+}
+
+.flick-loader::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  background: var(--flick-surface);
+  border-radius: 50%;
+}
+
+@keyframes flick-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* FLICK Pulse Animation */
+@keyframes flick-pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.flick-pulse {
+  animation: flick-pulse 2s ease-in-out infinite;
+}
+
+/* FLICK Hover Effects */
+.flick-hover-lift {
+  transition: var(--flick-transition);
+}
+
+.flick-hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.flick-hover-glow:hover {
+  box-shadow: 0 0 20px rgba(255, 107, 107, 0.3);
+}
+
+/* FLICK Mobile Responsiveness */
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 28px !important;
+  }
+  
+  .search-form {
+    max-width: 200px;
+  }
+  
+  .post-card {
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    margin-bottom: var(--flick-spacing-lg);
+  }
+  
+  .post-card:hover {
+    transform: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-brand {
+    font-size: 24px !important;
+  }
+  
+  .search-form {
+    max-width: 150px;
+  }
+  
+  .action-btn {
+    font-size: 20px;
+  }
+}
+
+/* FLICK Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .navbar-brand {
+    animation: none;
+  }
+}
+
+/* FLICK High Contrast Mode */
+@media (prefers-contrast: high) {
+  :root {
+    --flick-border: #000000;
+    --flick-text-secondary: #000000;
+  }
+  
+  .dark-mode {
+    --flick-border: #ffffff;
+    --flick-text-secondary: #ffffff;
+  }
+}
+
+/* FLICK Theme Toggle Button */
+#theme-toggle {
+  background: var(--flick-gradient-cool) !important;
+  border: none !important;
+  color: white !important;
+  border-radius: 50% !important;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--flick-transition-bounce) !important;
+  font-size: 16px;
+}
+
+#theme-toggle:hover {
+  transform: scale(1.1) rotate(10deg) !important;
+  box-shadow: 0 4px 15px rgba(69, 183, 209, 0.3) !important;
+}
+
+/* FLICK Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--flick-border-light);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--flick-gradient-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--flick-gradient-secondary);
+}
+
+/* FLICK Messages/Alerts */
+.alert {
+  border-radius: var(--flick-radius-lg);
+  border: none;
+  padding: var(--flick-spacing-md) var(--flick-spacing-lg);
+  font-weight: 500;
+  box-shadow: 0 4px 12px var(--flick-shadow);
+}
+
+.alert-success {
+  background: linear-gradient(135deg, rgba(102, 187, 106, 0.1) 0%, rgba(102, 187, 106, 0.05) 100%);
+  color: var(--flick-success);
+  border-left: 4px solid var(--flick-success);
+}
+
+.alert-info {
+  background: linear-gradient(135deg, rgba(69, 183, 209, 0.1) 0%, rgba(69, 183, 209, 0.05) 100%);
+  color: var(--flick-accent);
+  border-left: 4px solid var(--flick-accent);
+}
+
+.alert-warning {
+  background: linear-gradient(135deg, rgba(255, 167, 38, 0.1) 0%, rgba(255, 167, 38, 0.05) 100%);
+  color: var(--flick-warning);
+  border-left: 4px solid var(--flick-warning);
+}
+
+.alert-danger {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.1) 0%, rgba(255, 107, 107, 0.05) 100%);
+  color: var(--flick-primary);
+  border-left: 4px solid var(--flick-primary);
+}

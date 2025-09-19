@@ -1,0 +1,397 @@
+/* ========================================
+   MODERN PROFILE PAGE CSS - INSTAGRAM-LIKE
+   ======================================== */
+
+/* Profile Page Specific Enhancements */
+
+/* Profile Stats Hover Effects */
+.profile-stat:hover .stat-count {
+    color: var(--primary-color);
+    transform: scale(1.1);
+    transition: var(--transition);
+}
+
+/* Enhanced Profile Actions */
+.profile-actions {
+    flex-wrap: wrap;
+}
+
+.btn-profile, .btn-profile-primary {
+    min-width: 80px;
+    height: 32px;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+.btn-profile-icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+}
+
+/* Following Button Animation */
+.following {
+    position: relative;
+    overflow: hidden;
+}
+
+.following::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.following:hover::before {
+    left: 100%;
+}
+
+/* Profile Picture Glow Effect */
+.profile-picture {
+    position: relative;
+}
+
+.profile-picture::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 50%;
+    background: var(--gradient);
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.profile-picture:hover::before {
+    opacity: 1;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Enhanced Post Grid */
+.posts-grid {
+    gap: 3px;
+    margin-bottom: var(--spacing-xl);
+}
+
+.post-thumbnail {
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px var(--shadow-light);
+    transition: var(--transition);
+}
+
+.post-thumbnail:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Post Overlay Enhancement */
+.post-overlay {
+    background: linear-gradient(45deg, 
+        rgba(64, 93, 230, 0.8), 
+        rgba(88, 81, 219, 0.8), 
+        rgba(131, 58, 180, 0.8)
+    );
+}
+
+.post-stats {
+    font-size: 16px;
+    gap: var(--spacing-lg);
+}
+
+.post-stat {
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.post-stat i {
+    font-size: 18px;
+}
+
+/* Enhanced Highlights */
+.highlight-circle {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.highlight-circle:hover {
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+.new-highlight .highlight-circle {
+    background: var(--gradient);
+    border: 2px solid transparent;
+    box-shadow: 0 4px 12px rgba(64, 93, 230, 0.3);
+}
+
+.new-highlight .highlight-circle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(64, 93, 230, 0.4);
+}
+
+/* Navigation Tabs Enhancement */
+.nav-tab {
+    transition: all 0.2s ease;
+    padding: var(--spacing-md) var(--spacing-lg);
+}
+
+.nav-tab:hover {
+    background-color: var(--border-light);
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+}
+
+.nav-tab.active {
+    background-color: var(--surface);
+    border-top: 2px solid var(--primary-color);
+}
+
+.nav-tab i {
+    font-size: 24px;
+    margin-bottom: var(--spacing-xs);
+}
+
+/* Bio Link Styling */
+.profile-bio-text {
+    white-space: pre-line;
+}
+
+.profile-website a {
+    position: relative;
+}
+
+.profile-website a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--gradient);
+    transition: width 0.3s ease;
+}
+
+.profile-website a:hover::after {
+    width: 100%;
+}
+
+/* Empty State Enhancement */
+.empty-state {
+    background: radial-gradient(ellipse at center, 
+        var(--border-light) 0%, 
+        transparent 70%
+    );
+    border-radius: var(--border-radius-lg);
+    margin: var(--spacing-lg) 0;
+}
+
+.empty-icon {
+    position: relative;
+}
+
+.empty-icon::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    background: var(--gradient);
+    border-radius: 50%;
+    opacity: 0.1;
+    z-index: -1;
+}
+
+/* Loading States */
+.profile-loading {
+    animation: skeleton-loading 1.5s infinite;
+    background: linear-gradient(90deg, 
+        var(--border-light) 25%, 
+        var(--border) 50%, 
+        var(--border-light) 75%
+    );
+    background-size: 200% 100%;
+}
+
+/* Profile Badge (for verified users) */
+.profile-verified {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+.verified-badge {
+    width: 18px;
+    height: 18px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+}
+
+/* Story Ring Animation */
+.story-ring {
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border: 2px solid;
+    border-color: #fd5949 #d6249f #285AEB #fd5949;
+    border-radius: 50%;
+    animation: rotate 3s linear infinite;
+}
+
+@keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Advanced Mobile Optimizations */
+@media (max-width: 768px) {
+    .profile-header-content {
+        padding: 0 var(--spacing-sm);
+    }
+    
+    .profile-stats {
+        width: 100%;
+        justify-content: space-around;
+        padding: var(--spacing-md) 0;
+        border-top: 1px solid var(--border-light);
+        border-bottom: 1px solid var(--border-light);
+        margin: var(--spacing-md) 0;
+    }
+    
+    .profile-stat {
+        text-align: center;
+    }
+    
+    .stat-count {
+        display: block;
+        font-size: 18px;
+        font-weight: 700;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+        color: var(--text-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .highlights-section {
+        margin: 0 -var(--spacing-sm) var(--spacing-lg);
+        padding: var(--spacing-md) var(--spacing-sm);
+        background: var(--surface);
+        border-top: 1px solid var(--border-light);
+        border-bottom: 1px solid var(--border-light);
+    }
+    
+    .posts-grid {
+        gap: 1px;
+        margin: 0 -var(--spacing-sm);
+    }
+    
+    .post-thumbnail {
+        border-radius: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-bio {
+        text-align: center;
+        margin: var(--spacing-md) 0;
+    }
+    
+    .profile-actions {
+        gap: var(--spacing-xs);
+    }
+    
+    .btn-profile, .btn-profile-primary {
+        font-size: 13px;
+        min-width: 70px;
+        height: 30px;
+    }
+    
+    .posts-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Dark Mode Enhancements */
+.dark-mode .post-overlay {
+    background: linear-gradient(45deg, 
+        rgba(64, 93, 230, 0.9), 
+        rgba(88, 81, 219, 0.9), 
+        rgba(131, 58, 180, 0.9)
+    );
+}
+
+.dark-mode .empty-state {
+    background: radial-gradient(ellipse at center, 
+        var(--dark-border) 0%, 
+        transparent 70%
+    );
+}
+
+.dark-mode .nav-tab:hover {
+    background-color: var(--dark-border);
+}
+
+.dark-mode .nav-tab.active {
+    background-color: var(--dark-surface);
+    border-top-color: var(--primary-color);
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+    .profile-picture::before,
+    .following::before,
+    .story-ring {
+        animation: none;
+    }
+    
+    .post-thumbnail:hover {
+        transform: none;
+    }
+    
+    .highlight-circle:hover,
+    .profile-stat:hover .stat-count {
+        transform: none;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+    .post-overlay {
+        background: rgba(0, 0, 0, 0.8);
+    }
+    
+    .nav-tab.active {
+        border-top-width: 3px;
+    }
+    
+    .btn-profile, .btn-profile-primary {
+        border-width: 2px;
+    }
+}

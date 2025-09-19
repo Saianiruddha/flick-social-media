@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>{% block title %}FLICK{% endblock %}</title>
+    
+    <!-- Preconnect to improve performance -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Modern CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/flick-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'css/modern-styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/avatar-placeholder.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile-modern.css' %}">
+    
+    <!-- Additional CSS -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Modern Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'feed' %}">FLICK</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" 
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Search Bar -->
+                <div class="navbar-nav me-auto">
+                    <form class="d-flex search-form" method="GET" action="{% url 'search' %}" style="width: 300px;">
+                        <div class="input-group">
+                            <input class="form-control" type="search" name="q" placeholder="Search users and posts..." 
+                                   aria-label="Search" value="{{ request.GET.q }}">
+                            <button class="btn btn-outline-secondary" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'feed' %}">
+                            <i class="bi bi-house"></i> <span class="d-md-inline d-none">Home</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'search' %}">
+                            <i class="bi bi-search"></i> <span class="d-md-inline d-none">Search</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'create_post' %}">
+                            <i class="bi bi-plus-square"></i> <span class="d-md-inline d-none">Create</span>
+                        </a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' user.username %}">
+                            <i class="bi bi-person-circle"></i> <span class="d-md-inline d-none">Profile</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link nav-link border-0 bg-transparent">
+                                <i class="bi bi-box-arrow-right"></i> <span class="d-md-inline d-none">Logout</span>
+                            </button>
+                        </form>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="bi bi-box-arrow-in-right"></i> <span class="d-md-inline d-none">Login</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'signup' %}">
+                            <i class="bi bi-person-plus"></i> <span class="d-md-inline d-none">Signup</span>
+                        </a>
+                    </li>
+                    {% endif %}
+                    <!-- 🌙 Dark Mode Toggle Button -->
+                    <li class="nav-item ms-3">
+                        <button id="theme-toggle" class="btn btn-outline-secondary btn-sm">🌙</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <div class="container">
+        {% block content %}
+        <!-- Page-specific content will go here -->
+        {% endblock %}
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- FLICK Animations -->
+    <script src="{% static 'js/flick-animations.js' %}"></script>
+
+    <!-- 🌙 Dark Mode Script -->
+    <script>
+        const toggleButton = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // Load saved theme
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            toggleButton.textContent = '☀️';
+        }
+
+        toggleButton.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                toggleButton.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                toggleButton.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+    
+    <!-- Additional Mobile Responsiveness Styles -->
+    <style>
+        /* Mobile responsiveness improvements */
+        @media (max-width: 768px) {
+            .search-form {
+                width: 200px !important;
+                margin-bottom: 10px;
+            }
+            
+            .navbar-nav .nav-link {
+                padding: 0.5rem 0.75rem;
+            }
+            
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            
+            .btn {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.875rem;
+            }
+            
+            .card {
+                margin-bottom: 1rem;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .search-form {
+                width: 150px !important;
+            }
+            
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+            
+            .nav-link i {
+                font-size: 1.1rem;
+            }
+        }
+        
+        /* Dark mode improvements */
+        .dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        
+        .dark-mode .bg-white {
+            background-color: #1e1e1e !important;
+        }
+        
+        .dark-mode .bg-light {
+            background-color: #121212 !important;
+        }
+        
+        .dark-mode .card {
+            background-color: #1e1e1e;
+            border-color: #333;
+        }
+        
+        .dark-mode .navbar-light {
+            background-color: #1e1e1e !important;
+            border-bottom: 1px solid #333;
+        }
+        
+        .dark-mode .form-control {
+            background-color: #2a2a2a;
+            border-color: #555;
+            color: #e0e0e0;
+        }
+        
+        .dark-mode .form-control:focus {
+            background-color: #2a2a2a;
+            border-color: #007bff;
+            color: #e0e0e0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        .dark-mode .btn-outline-secondary {
+            border-color: #555;
+            color: #e0e0e0;
+        }
+        
+        .dark-mode .btn-outline-secondary:hover {
+            background-color: #555;
+            border-color: #666;
+        }
+        
+        .dark-mode .text-muted {
+            color: #aaa !important;
+        }
+        
+        /* Loading states */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        /* Smooth transitions */
+        * {
+            transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+        
+        /* Custom scrollbar for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        
+        .dark-mode ::-webkit-scrollbar-track {
+            background: #2a2a2a;
+        }
+        
+        .dark-mode ::-webkit-scrollbar-thumb {
+            background: #555;
+        }
+        
+        .dark-mode ::-webkit-scrollbar-thumb:hover {
+            background: #666;
+        }
+    </style>
+</body>
+</html>

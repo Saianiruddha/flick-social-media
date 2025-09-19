@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'users/css/edit_profile.css' %}">
+
+<div class="edit-profile-container">
+    <h2 class="page-title text-center mb-4">Edit Profile</h2>
+
+    <form method="post" enctype="multipart/form-data" class="edit-profile-form glass-card">
+        {% csrf_token %}
+
+        <!-- Profile Image -->
+        <div class="form-group profile-image-container mb-3">
+            <label>Profile Image</label><br>
+            <img src="{% if user.userprofile.profile_image and user.userprofile.profile_image.name %}{{ user.userprofile.profile_image.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" 
+                 class="profile-image-preview mb-2" alt="Profile Image">
+            <input type="file" name="profile_image" id="id_profile_image" class="form-control-file">
+        </div>
+
+        <!-- Username -->
+        <div class="form-group mb-3">
+            <label for="{{ user_form.username.id_for_label }}">Username</label>
+            {{ user_form.username }}
+            {% if user_form.username.errors %}
+                <div class="text-danger small">
+                    {% for error in user_form.username.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Email -->
+        <div class="form-group mb-3">
+            <label for="{{ user_form.email.id_for_label }}">Email</label>
+            {{ user_form.email }}
+            {% if user_form.email.errors %}
+                <div class="text-danger small">
+                    {% for error in user_form.email.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Bio -->
+        <div class="form-group mb-3">
+            <label for="{{ profile_form.bio.id_for_label }}">Bio</label>
+            {{ profile_form.bio }}
+            {% if profile_form.bio.errors %}
+                <div class="text-danger small">
+                    {% for error in profile_form.bio.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+    </form>
+</div>
+{% endblock %}

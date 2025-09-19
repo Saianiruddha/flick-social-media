@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found | Instaclone{% endblock %}
+
+{% block content %}
+<div class="container text-center">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="error-page">
+                <h1 class="display-1 text-warning">404</h1>
+                <h2 class="mb-4">Page Not Found</h2>
+                <p class="lead mb-4">
+                    Sorry, the page you're looking for doesn't exist or has been moved.
+                </p>
+                <div class="mb-4">
+                    <img src="{% load static %}{% static 'images/404-illustration.png' %}" 
+                         alt="404 Not Found" class="img-fluid" style="max-width: 300px;">
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{% url 'home' %}" class="btn btn-primary btn-lg me-md-2">
+                        <i class="bi bi-house-fill"></i> Go Home
+                    </a>
+                    <a href="{% url 'feed' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="bi bi-grid-3x3-gap-fill"></i> Browse Feed
+                    </a>
+                </div>
+                <hr class="my-4">
+                <p class="text-muted">
+                    If you think this is a mistake, please 
+                    <a href="mailto:support@instaclone.com" class="text-decoration-none">contact support</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.error-page {
+    padding: 2rem 0;
+}
+
+.display-1 {
+    font-size: 8rem;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .display-1 {
+        font-size: 6rem;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,191 @@
+/* Feed Page Styles */
+:root {
+  --primary: 280 100% 70%;
+  --primary-hover: 280 100% 85%;
+  --secondary: 200 100% 75%;
+  --background: 260 100% 99%;
+  --foreground: 260 15% 8%;
+  --muted: 260 20% 96%;
+  --border: 260 30% 92%;
+
+  --gradient-primary: linear-gradient(135deg, hsl(280 100% 70%), hsl(200 100% 75%));
+  --gradient-hover: linear-gradient(135deg, hsl(280 100% 85%), hsl(200 100% 80%));
+  --shadow-card: 0 8px 20px -5px hsl(260 15% 8% / 0.1);
+  --shadow-hover: 0 15px 30px -5px hsl(280 100% 70% / 0.4);
+}
+
+/* Base Styles */
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  padding: 1.5rem;
+}
+
+.feed-container {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Feed Header */
+.feed-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: var(--gradient-primary);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 1rem;
+}
+
+/* Post Card */
+.post-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  border-radius: 1rem;
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Post Body */
+.post-body {
+  padding: 1rem;
+}
+
+/* Profile Link */
+.profile-link {
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: var(--gradient-primary);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.profile-link:hover {
+  background: var(--gradient-hover);
+  transform: scale(1.03);
+}
+
+/* Post Caption */
+.post-caption {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: hsl(var(--foreground));
+}
+
+/* Post Image */
+.post-card img {
+  width: 100%;
+  object-fit: cover;
+  max-height: 200px; /* reduced height */
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.post-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Post Actions */
+.post-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.post-actions button {
+  padding: 0.4rem 0.8rem;
+  border-radius: 1.5rem;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.85rem;
+  background: var(--gradient-primary);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.post-actions button:hover {
+  background: var(--gradient-hover);
+  transform: scale(1.05);
+}
+
+/* No Posts Message */
+.text-muted {
+  text-align: center;
+  color: hsl(var(--foreground)/0.6);
+  font-size: 1rem;
+  padding: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .post-card img {
+    max-height: 150px;
+  }
+  
+  .post-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+/* --- Existing CSS remains unchanged --- */
+
+/* Like Button Active State */
+.post-actions button.liked {
+  background: hsl(var(--secondary));
+  color: white;
+  box-shadow: 0 0 8px hsl(var(--secondary));
+}
+
+/* Delete Button */
+.post-actions button.delete {
+  background: hsl(0 80% 60%);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.post-actions button.delete:hover {
+  background: hsl(0 80% 70%);
+  transform: scale(1.05);
+  box-shadow: 0 0 8px hsl(0 80% 70%);
+}
+
+/* Comment Button (optional subtle difference) */
+.post-actions button.comment {
+  background: hsl(200 80% 60%);
+}
+
+.post-actions button.comment:hover {
+  background: hsl(200 80% 70%);
+  transform: scale(1.05);
+}
+
+/* Responsive Tweaks for Actions */
+@media (max-width: 480px) {
+  .post-actions {
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+  
+  .post-actions button {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}

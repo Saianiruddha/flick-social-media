@@ -1,0 +1,894 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ profile.user.username }} (@{{ profile.user.username }}) • Instagram{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="profile-header-content">
+            <!-- Profile Picture -->
+            <div class="profile-picture-section">
+                <div class="profile-picture">
+                    {% if profile.profile_image %}
+                        <img src="{{ profile.profile_image.url }}" alt="{{ profile.user.username }}">
+                    {% else %}
+                        <div class="avatar-initials-large">
+                            {{ profile.user.username|first|upper }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Profile Info -->
+            <div class="profile-info-section">
+                <div class="profile-header-row">
+                    <h1 class="profile-username">{{ profile.user.username }}</h1>
+                    
+                    <!-- Action Buttons -->
+                    <div class="profile-actions">
+                        {% if user.is_authenticated %}
+                            {% if user == profile.user %}
+                                <a href="{% url 'edit_profile' %}" class="btn-profile">Edit profile</a>
+                                <button class="btn-profile-icon" onclick="showSettings()">
+                                    <i class="bi bi-gear"></i>
+                                </button>
+                            {% else %}
+                                {% if is_following %}
+                                    <button class="btn-profile following" onclick="toggleFollow('{{ profile.user.username }}')">
+                                        <span class="follow-text">Following</span>
+                                        <span class="unfollow-text" style="display: none;">Unfollow</span>
+                                    </button>
+                                {% else %}
+                                    <button class="btn-profile-primary" onclick="toggleFollow('{{ profile.user.username }}')">
+                                        Follow
+                                    </button>
+                                {% endif %}
+                                <button class="btn-profile" onclick="sendMessage('{{ profile.user.username }}')">
+                                    Message
+                                </button>
+                                <button class="btn-profile-icon" onclick="showMoreOptions()">
+                                    <i class="bi bi-three-dots"></i>
+                                </button>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn-profile-primary">Follow</a>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <span class="stat-count">{{ posts_count|default:0 }}</span>
+                        <span class="stat-label">post{{ posts_count|pluralize }}</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="stat-count">{{ followers_count|default:0 }}</span>
+                        <span class="stat-label">follower{{ followers_count|pluralize }}</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="stat-count">{{ following_count|default:0 }}</span>
+                        <span class="stat-label">following</span>
+                    </div>
+                </div>
+
+                <!-- Bio Section -->
+                <div class="profile-bio">
+                    {% if profile.user.get_full_name %}
+                        <div class="profile-full-name">{{ profile.user.get_full_name }}</div>
+                    {% endif %}
+                    {% if profile.bio %}
+                        <div class="profile-bio-text">{{ profile.bio|linebreaks }}</div>
+                    {% endif %}
+                    {% if profile.website %}
+                        <div class="profile-website">
+                            <a href="{{ profile.website }}" target="_blank" rel="noopener noreferrer">
+                                {{ profile.website }}
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Highlights Section (placeholder for future implementation) -->
+    <div class="highlights-section">
+        <div class="highlights-scroll">
+            <!-- Story highlights would go here -->
+            <div class="highlight-item new-highlight" onclick="createHighlight()">
+                <div class="highlight-circle">
+                    <i class="bi bi-plus"></i>
+                </div>
+                <span class="highlight-name">New</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="profile-nav">
+        <button class="nav-tab active" data-tab="posts" onclick="switchTab('posts')">
+            <i class="bi bi-grid-3x3"></i>
+            <span class="nav-tab-text">POSTS</span>
+        </button>
+        <button class="nav-tab" data-tab="saved" onclick="switchTab('saved')">
+            <i class="bi bi-bookmark"></i>
+            <span class="nav-tab-text">SAVED</span>
+        </button>
+        <button class="nav-tab" data-tab="tagged" onclick="switchTab('tagged')">
+            <i class="bi bi-person-square"></i>
+            <span class="nav-tab-text">TAGGED</span>
+        </button>
+    </div>
+
+    <!-- Content Sections -->
+    <div class="profile-content">
+        <!-- Posts Grid -->
+        <div class="content-section active" id="posts-section">
+            {% if posts %}
+                <div class="posts-grid">
+                    {% for post in posts %}
+                        <div class="post-thumbnail" onclick="openPostModal('{{ post.id }}')">
+                            {% if post.image %}
+                                <img src="{{ post.image.url }}" alt="Post by {{ post.user.username }}">
+                                <div class="post-overlay">
+                                    <div class="post-stats">
+                                        <span class="post-stat">
+                                            <i class="bi bi-heart-fill"></i>
+                                            {{ post.total_likes }}
+                                        </span>
+                                        <span class="post-stat">
+                                            <i class="bi bi-chat-fill"></i>
+                                            {{ post.comments.count }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="post-no-image">
+                                    <i class="bi bi-image"></i>
+                                    <p>{{ post.caption|truncatechars:50 }}</p>
+                                </div>
+                                <div class="post-overlay">
+                                    <div class="post-stats">
+                                        <span class="post-stat">
+                                            <i class="bi bi-heart-fill"></i>
+                                            {{ post.total_likes }}
+                                        </span>
+                                        <span class="post-stat">
+                                            <i class="bi bi-chat-fill"></i>
+                                            {{ post.comments.count }}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        {% if user == profile.user %}
+                            <i class="bi bi-camera" style="font-size: 48px;"></i>
+                        {% else %}
+                            <i class="bi bi-camera" style="font-size: 48px;"></i>
+                        {% endif %}
+                    </div>
+                    <h3>
+                        {% if user == profile.user %}
+                            Share Photos
+                        {% else %}
+                            No Posts Yet
+                        {% endif %}
+                    </h3>
+                    <p>
+                        {% if user == profile.user %}
+                            When you share photos, they will appear on your profile.
+                        {% else %}
+                            When {{ profile.user.username }} shares photos, you'll see them here.
+                        {% endif %}
+                    </p>
+                    {% if user == profile.user %}
+                        <a href="{% url 'create_post' %}" class="btn-profile-primary">Share your first photo</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Saved Posts Section -->
+        <div class="content-section" id="saved-section">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="bi bi-bookmark" style="font-size: 48px;"></i>
+                </div>
+                <h3>Save</h3>
+                <p>Save photos and videos that you want to see again. No one is notified, and only you can see what you've saved.</p>
+            </div>
+        </div>
+
+        <!-- Tagged Posts Section -->
+        <div class="content-section" id="tagged-section">
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="bi bi-person-square" style="font-size: 48px;"></i>
+                </div>
+                <h3>Photos of you</h3>
+                <p>When people tag you in photos, they'll appear here.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Post Modal (for future implementation) -->
+<div id="post-modal" class="modal" onclick="closePostModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-close" onclick="closePostModal()">
+            <i class="bi bi-x"></i>
+        </div>
+        <div id="modal-post-content">
+            <!-- Post content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<script>
+// Tab switching functionality
+function switchTab(tab) {
+    // Remove active class from all tabs and sections
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+    
+    // Add active class to clicked tab and corresponding section
+    document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+    document.getElementById(`${tab}-section`).classList.add('active');
+}
+
+// Follow/Unfollow functionality
+function toggleFollow(username) {
+    const button = event.target;
+    
+    fetch(`/posts/follow/${username}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            if (data.is_following) {
+                button.className = 'btn-profile following';
+                button.innerHTML = `
+                    <span class="follow-text">Following</span>
+                    <span class="unfollow-text" style="display: none;">Unfollow</span>
+                `;
+            } else {
+                button.className = 'btn-profile-primary';
+                button.textContent = 'Follow';
+            }
+            
+            // Update follower count
+            const followerCount = document.querySelector('.profile-stat .stat-count');
+            if (followerCount) {
+                followerCount.textContent = data.followers_count;
+            }
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Hover effect for following button
+document.addEventListener('DOMContentLoaded', function() {
+    const followingBtn = document.querySelector('.following');
+    if (followingBtn) {
+        followingBtn.addEventListener('mouseenter', function() {
+            this.querySelector('.follow-text').style.display = 'none';
+            this.querySelector('.unfollow-text').style.display = 'inline';
+            this.classList.add('unfollow-hover');
+        });
+        
+        followingBtn.addEventListener('mouseleave', function() {
+            this.querySelector('.follow-text').style.display = 'inline';
+            this.querySelector('.unfollow-text').style.display = 'none';
+            this.classList.remove('unfollow-hover');
+        });
+    }
+});
+
+// Post modal functionality
+function openPostModal(postId) {
+    // This would fetch and display the full post
+    console.log('Open post:', postId);
+    // For now, redirect to post detail
+    window.location.href = `/posts/detail/${postId}/`;
+}
+
+function closePostModal() {
+    document.getElementById('post-modal').style.display = 'none';
+}
+
+// Settings and options
+function showSettings() {
+    // Implement settings dropdown
+    alert('Settings functionality coming soon!');
+}
+
+function showMoreOptions() {
+    // Implement more options dropdown
+    alert('More options coming soon!');
+}
+
+function sendMessage(username) {
+    // Implement messaging functionality
+    alert(`Message feature coming soon for @${username}!`);
+}
+
+function createHighlight() {
+    // Implement highlight creation
+    alert('Create highlight feature coming soon!');
+}
+
+// Utility function
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+
+<style>
+/* Profile Page Styles */
+.profile-container {
+    max-width: 935px;
+    margin: 0 auto;
+    padding: var(--spacing-xl) var(--spacing-md) 0;
+}
+
+/* Profile Header */
+.profile-header {
+    margin-bottom: var(--spacing-xl);
+}
+
+.profile-header-content {
+    display: flex;
+    gap: var(--spacing-xl);
+    align-items: flex-start;
+}
+
+.profile-picture-section {
+    flex-shrink: 0;
+}
+
+.profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: var(--gradient);
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-picture img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-initials-large {
+    width: 144px;
+    height: 144px;
+    background: var(--gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 48px;
+    font-weight: 600;
+}
+
+.profile-info-section {
+    flex: 1;
+    min-width: 0;
+}
+
+.profile-header-row {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+.profile-username {
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.profile-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+}
+
+/* Profile Action Buttons */
+.btn-profile, .btn-profile-primary {
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border);
+}
+
+.btn-profile {
+    background-color: var(--surface);
+    color: var(--text-primary);
+}
+
+.btn-profile:hover {
+    background-color: var(--border-light);
+}
+
+.btn-profile-primary {
+    background: var(--gradient);
+    color: white;
+    border: none;
+}
+
+.btn-profile-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(64, 93, 230, 0.3);
+}
+
+.btn-profile-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-profile-icon:hover {
+    background-color: var(--border-light);
+}
+
+/* Following button hover effect */
+.following.unfollow-hover {
+    background-color: #ed4956;
+    border-color: #ed4956;
+    color: white;
+}
+
+/* Profile Stats */
+.profile-stats {
+    display: flex;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-lg);
+}
+
+.profile-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+}
+
+.stat-count {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.stat-label {
+    font-size: 16px;
+    color: var(--text-primary);
+}
+
+/* Profile Bio */
+.profile-bio {
+    max-width: 400px;
+}
+
+.profile-full-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.profile-bio-text {
+    color: var(--text-primary);
+    line-height: 1.4;
+    margin-bottom: var(--spacing-xs);
+}
+
+.profile-website a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.profile-website a:hover {
+    text-decoration: underline;
+}
+
+/* Highlights Section */
+.highlights-section {
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md) 0;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.highlights-scroll {
+    display: flex;
+    gap: var(--spacing-md);
+    overflow-x: auto;
+    padding: var(--spacing-sm) 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.highlights-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.highlight-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 77px;
+    cursor: pointer;
+}
+
+.highlight-circle {
+    width: 77px;
+    height: 77px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-xs);
+    transition: var(--transition);
+}
+
+.highlight-circle:hover {
+    background-color: var(--border-light);
+}
+
+.new-highlight .highlight-circle {
+    background: var(--gradient);
+    color: white;
+    font-size: 24px;
+}
+
+.highlight-name {
+    font-size: 12px;
+    color: var(--text-primary);
+    text-align: center;
+}
+
+/* Navigation Tabs */
+.profile-nav {
+    display: flex;
+    border-top: 1px solid var(--border-light);
+    justify-content: center;
+    gap: var(--spacing-xl);
+}
+
+.nav-tab {
+    background: none;
+    border: none;
+    padding: var(--spacing-md) 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: var(--transition);
+    position: relative;
+    border-top: 1px solid transparent;
+    margin-top: -1px;
+}
+
+.nav-tab:hover {
+    color: var(--text-primary);
+}
+
+.nav-tab.active {
+    color: var(--text-primary);
+    border-top-color: var(--text-primary);
+}
+
+.nav-tab i {
+    font-size: 12px;
+}
+
+/* Content Sections */
+.profile-content {
+    margin-top: var(--spacing-xl);
+}
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
+
+/* Posts Grid */
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+}
+
+.post-thumbnail {
+    aspect-ratio: 1;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    background-color: var(--border-light);
+}
+
+.post-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transition);
+}
+
+.post-thumbnail:hover img {
+    transform: scale(1.05);
+}
+
+.post-no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--border-light);
+    color: var(--text-secondary);
+    padding: var(--spacing-sm);
+    text-align: center;
+}
+
+.post-no-image i {
+    font-size: 24px;
+    margin-bottom: var(--spacing-sm);
+}
+
+.post-no-image p {
+    font-size: 12px;
+    margin: 0;
+}
+
+.post-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.post-thumbnail:hover .post-overlay {
+    opacity: 1;
+}
+
+.post-stats {
+    display: flex;
+    gap: var(--spacing-lg);
+    color: white;
+    font-weight: 600;
+}
+
+.post-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-xl);
+}
+
+.empty-icon {
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-secondary);
+    opacity: 0.6;
+}
+
+.empty-state h3 {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-sm);
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-lg);
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Modal (for future use) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 90vw;
+    max-height: 90vh;
+    background: var(--surface);
+    border-radius: var(--border-radius-lg);
+}
+
+.modal-close {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1001;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .profile-container {
+        padding: var(--spacing-lg) var(--spacing-sm) 0;
+    }
+    
+    .profile-header-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: var(--spacing-lg);
+    }
+    
+    .profile-picture {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .avatar-initials-large {
+        width: 114px;
+        height: 114px;
+        font-size: 36px;
+    }
+    
+    .profile-username {
+        font-size: 24px;
+    }
+    
+    .profile-header-row {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    .profile-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .btn-profile, .btn-profile-primary {
+        flex: 1;
+    }
+    
+    .profile-stats {
+        justify-content: center;
+        gap: var(--spacing-lg);
+    }
+    
+    .profile-nav {
+        gap: 0;
+    }
+    
+    .nav-tab {
+        flex: 1;
+        justify-content: center;
+    }
+    
+    .nav-tab-text {
+        display: none;
+    }
+    
+    .nav-tab i {
+        font-size: 24px;
+    }
+    
+    .posts-grid {
+        gap: 2px;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-picture {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .avatar-initials-large {
+        width: 94px;
+        height: 94px;
+        font-size: 32px;
+    }
+    
+    .profile-username {
+        font-size: 20px;
+    }
+    
+    .profile-stats {
+        gap: var(--spacing-md);
+    }
+    
+    .stat-count {
+        font-size: 16px;
+    }
+    
+    .stat-label {
+        font-size: 14px;
+    }
+}
+</style>
+{% endblock %}

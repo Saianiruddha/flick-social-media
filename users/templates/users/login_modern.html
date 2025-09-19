@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Log in • Instagram{% endblock %}
+
+{% block content %}
+<div style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--background);">
+    <div style="width: 100%; max-width: 350px; padding: var(--spacing-md);">
+        <!-- Login Card -->
+        <div class="card" style="padding: var(--spacing-xl) var(--spacing-lg); text-align: center; margin-bottom: var(--spacing-md);">
+            <!-- Instagram Logo -->
+            <div style="margin-bottom: var(--spacing-xl);">
+                <h1 class="navbar-brand" style="font-size: 48px; margin: 0; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Instagram</h1>
+            </div>
+            
+            <!-- Login Form -->
+            <form method="post" style="margin-bottom: var(--spacing-lg);">
+                {% csrf_token %}
+                
+                <div style="margin-bottom: var(--spacing-sm);">
+                    <input type="text" 
+                           name="{{ form.username.name }}" 
+                           placeholder="Phone number, username, or email"
+                           class="form-control"
+                           style="background-color: var(--border-light); border: 1px solid var(--border); padding: var(--spacing-md); width: 100%; box-sizing: border-box;"
+                           required>
+                </div>
+                
+                <div style="margin-bottom: var(--spacing-md);">
+                    <input type="password" 
+                           name="{{ form.password.name }}" 
+                           placeholder="Password"
+                           class="form-control"
+                           style="background-color: var(--border-light); border: 1px solid var(--border); padding: var(--spacing-md); width: 100%; box-sizing: border-box;"
+                           required>
+                </div>
+                
+                <button type="submit" class="btn-primary" style="width: 100%; padding: var(--spacing-sm) 0; margin-bottom: var(--spacing-md); font-weight: 600;">
+                    Log in
+                </button>
+                
+                <!-- Divider -->
+                <div style="display: flex; align-items: center; margin: var(--spacing-lg) 0;">
+                    <div style="flex: 1; height: 1px; background-color: var(--border);"></div>
+                    <span style="padding: 0 var(--spacing-md); color: var(--text-secondary); font-weight: 600; font-size: 13px;">OR</span>
+                    <div style="flex: 1; height: 1px; background-color: var(--border);"></div>
+                </div>
+                
+                <!-- Social Login (placeholder) -->
+                <a href="#" style="color: var(--primary-color); text-decoration: none; font-weight: 600; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: var(--spacing-sm);">
+                    <i class="bi bi-facebook" style="font-size: 18px;"></i>
+                    Log in with Facebook
+                </a>
+                
+                <!-- Forgot Password -->
+                <div style="margin-top: var(--spacing-lg);">
+                    <a href="#" style="color: var(--primary-color); text-decoration: none; font-size: 12px;">Forgotten your password?</a>
+                </div>
+            </form>
+            
+            <!-- Form Errors -->
+            {% if form.errors %}
+                <div style="background-color: #ffeaea; border: 1px solid #ed4956; color: #ed4956; padding: var(--spacing-md); border-radius: var(--border-radius); margin-bottom: var(--spacing-md); font-size: 14px;">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <div>{{ error }}</div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <!-- Sign Up Card -->
+        <div class="card" style="padding: var(--spacing-lg); text-align: center; margin-bottom: var(--spacing-md);">
+            <p style="margin: 0; font-size: 14px; color: var(--text-primary);">
+                Don't have an account? 
+                <a href="{% url 'signup' %}" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">Sign up</a>
+            </p>
+        </div>
+        
+        <!-- Download App -->
+        <div style="text-align: center;">
+            <p style="font-size: 14px; color: var(--text-primary); margin-bottom: var(--spacing-md);">Get the app.</p>
+            <div style="display: flex; gap: var(--spacing-sm); justify-content: center;">
+                <img src="data:image/svg+xml,%3Csvg width='136' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='136' height='40' rx='8' fill='%23000'/%3E%3Ctext x='68' y='25' text-anchor='middle' fill='white' font-size='12'%3EApp Store%3C/text%3E%3C/svg%3E" alt="Download on the App Store" style="height: 40px; cursor: pointer;">
+                <img src="data:image/svg+xml,%3Csvg width='136' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='136' height='40' rx='8' fill='%23000'/%3E%3Ctext x='68' y='25' text-anchor='middle' fill='white' font-size='12'%3EGoogle Play%3C/text%3E%3C/svg%3E" alt="Get it on Google Play" style="height: 40px; cursor: pointer;">
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Login page specific styles */
+body {
+    background-color: var(--background);
+}
+
+.navbar {
+    display: none;
+}
+
+.form-control:focus {
+    background-color: var(--surface);
+    border-color: var(--border);
+    box-shadow: 0 0 0 2px rgba(64, 93, 230, 0.1);
+}
+
+@media (max-width: 450px) {
+    .card {
+        border: none;
+        box-shadow: none;
+        background-color: transparent;
+    }
+    
+    body {
+        background-color: var(--surface);
+    }
+}
+</style>
+{% endblock %}

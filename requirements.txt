@@ -1,0 +1,33 @@
+# Core Django dependencies
+Django==5.2.6
+python-decouple==3.8
+
+# Database drivers
+# For MySQL (uncomment if using MySQL)
+# mysqlclient==2.2.0
+
+# Image processing
+Pillow==10.4.0  # Updated for Python 3.13 compatibility (was 10.0.1)
+
+# API Framework
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.3.0
+django-cors-headers==4.3.1
+
+# Security and authentication
+django-extensions==3.2.3
+
+# Development dependencies (optional)
+# django-debug-toolbar==4.2.0
+
+# Production dependencies (uncomment for production)
+# gunicorn==21.2.0
+# whitenoise==6.6.0
+
+# Testing dependencies (for future testing)
+# coverage==7.3.2
+# factory-boy==3.3.0
+
+# Email backend (for production)
+# django-ses==3.5.2  # For AWS SES
+# sendgrid==6.10.0   # For SendGrid
