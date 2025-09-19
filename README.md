@@ -1,83 +1,219 @@
-# ⚡ FLICK - Modern Social Media Platform
+<div align="center">
 
-A dynamic and engaging social media platform built with Django, featuring quick post sharing, instant user interactions, and a modern, energetic user experience that's all about capturing and sharing life's moments in a *flick*.
+# ⚡ FLICK
+### *Modern Social Media Platform*
 
-## ⚡ What Makes FLICK Special
+<p align="center">
+  <img src="https://img.shields.io/badge/Django-4.2+-092E20?style=for-the-badge&logo=django&logoColor=white" alt="Django">
+  <img src="https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white" alt="Bootstrap">
+  <img src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
+</p>
 
-### 🎨 Modern Design Philosophy
-- **Energetic Color Palette**: Vibrant coral red (#FF6B6B) and fresh teal (#4ECDC4) gradients
-- **Quick Interactions**: Smooth, bouncy animations that respond instantly to user actions
-- **Dynamic Branding**: Custom FLICK logo with subtle glow animations
-- **Responsive Gradients**: Beautiful gradient overlays and interactive elements
+<p align="center">
+  <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="License">
+  <img src="https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=for-the-badge" alt="PRs Welcome">
+  <img src="https://img.shields.io/badge/Status-Active-success.svg?style=for-the-badge" alt="Status">
+</p>
 
-### 🚀 Enhanced User Experience
-- **Heart Explosion Effects**: Animated emoji explosions when liking posts
-- **Magnetic Card Hover**: 3D tilt effects on post cards for engaging interactions
-- **Smart Navbar**: Auto-hiding navigation with blur effects based on scroll
-- **Shimmer Effects**: Subtle light animations on hover for premium feel
-- **Touch Gestures**: Mobile-optimized flick gestures with visual feedback
+---
 
-### 🌈 Interactive Animations
-- **Scroll Reveal**: Staggered animations as content comes into view
-- **Click Ripples**: Material Design-inspired ripple effects on all interactions
-- **Form Focus**: Enhanced form field interactions with scaling effects
-- **Loading States**: Beautiful spinner animations for async operations
+*A dynamic and engaging social media platform built with Django, featuring quick post sharing, instant user interactions, and a modern, energetic user experience that's all about capturing and sharing life's moments in a **flick**.*
 
-## ✨ Core Features
+</div>
 
-### 🔐 User Authentication & Profiles
-- User registration and login with enhanced validation
-- Customizable user profiles with bio, profile picture, and additional fields
-- Private account functionality
-- Email notifications settings
+## 💻 **Tech Stack**
 
-### 📱 Post Management
-- Create posts with images and captions
-- Image upload with automatic resizing and validation
-- Like/unlike posts with AJAX support
-- Soft delete functionality for posts
-- Image optimization (max 5MB, auto-resize)
+<div align="center">
 
-### 💬 Social Interactions
-- Comment system on posts
-- Follow/unfollow users
-- Real-time like counts and interactions
-- User search functionality
+<table>
+<tr>
+<td align="center" width="96">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" width="48" height="48" alt="Python" />
+<br><strong>Python</strong>
+</td>
+<td align="center" width="96">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg" width="48" height="48" alt="Django" />
+<br><strong>Django</strong>
+</td>
+<td align="center" width="96">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" width="48" height="48" alt="Bootstrap" />
+<br><strong>Bootstrap</strong>
+</td>
+<td align="center" width="96">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" width="48" height="48" alt="JavaScript" />
+<br><strong>JavaScript</strong>
+</td>
+<td align="center" width="96">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" width="48" height="48" alt="HTML5" />
+<br><strong>HTML5</strong>
+</td>
+<td align="center" width="96">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" width="48" height="48" alt="CSS3" />
+<br><strong>CSS3</strong>
+</td>
+</tr>
+<tr>
+<td align="center" width="96">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" width="48" height="48" alt="SQLite" />
+<br><strong>SQLite</strong>
+</td>
+<td align="center" width="96">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" width="48" height="48" alt="Git" />
+<br><strong>Git</strong>
+</td>
+<td align="center" width="96">
+<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="48" height="48" alt="GitHub" />
+<br><strong>GitHub</strong>
+</td>
+<td align="center" width="96">
+⚡
+<br><strong>AJAX</strong>
+</td>
+<td align="center" width="96">
+🎨
+<br><strong>Animations</strong>
+</td>
+<td align="center" width="96">
+📱
+<br><strong>Responsive</strong>
+</td>
+</tr>
+</table>
 
-### 🎨 Enhanced UI/UX
-- Responsive Bootstrap design
-- Dark/Light mode toggle
-- Pagination for posts and profiles
-- Real-time feedback with messages
-- Mobile-optimized interface
+</div>
 
-### ⚡ Performance & Security
-- Database query optimization with select_related/prefetch_related
-- Image compression and resizing
-- Environment-based configuration
-- CSRF protection and security headers
-- File upload validation and limits
+## ✨ What Makes FLICK Special
 
-### 🛠 Admin Panel
-- Enhanced admin interface with thumbnails
-- Bulk actions and filtering
-- User statistics and content moderation
-- Optimized admin queries
+<table>
+<tr>
+<td width="50%">
 
-## 🚀 Installation & Setup
+### 🎨 **Modern Design Philosophy**
+- 🌈 **Energetic Color Palette**: Vibrant coral red (#FF6B6B) and fresh teal (#4ECDC4) gradients
+- ⚡ **Quick Interactions**: Smooth, bouncy animations that respond instantly to user actions
+- 🔥 **Dynamic Branding**: Custom FLICK logo with subtle glow animations
+- 🎭 **Responsive Gradients**: Beautiful gradient overlays and interactive elements
 
-### Prerequisites
-- Python 3.9+
-- pip
-- Virtual environment (recommended)
+</td>
+<td width="50%">
 
-### 1. Clone the Repository
+### 🚀 **Enhanced User Experience**
+- 💖 **Heart Explosion Effects**: Animated emoji explosions when liking posts
+- 🧲 **Magnetic Card Hover**: 3D tilt effects on post cards for engaging interactions
+- 🔍 **Smart Navbar**: Auto-hiding navigation with blur effects based on scroll
+- ✨ **Shimmer Effects**: Subtle light animations on hover for premium feel
+- 📱 **Touch Gestures**: Mobile-optimized flick gestures with visual feedback
+
+</td>
+</tr>
+</table>
+
+### 🌈 **Interactive Animations**
+- 🎬 **Scroll Reveal**: Staggered animations as content comes into view
+- 🌊 **Click Ripples**: Material Design-inspired ripple effects on all interactions
+- 🎯 **Form Focus**: Enhanced form field interactions with scaling effects
+- ⏳ **Loading States**: Beautiful spinner animations for async operations
+
+## 📦 **Core Features**
+
+<details>
+<summary><b>🔐 User Authentication & Profiles</b></summary>
+
+- ✅ User registration and login with enhanced validation
+- 👤 Customizable user profiles with bio, profile picture, and additional fields
+- 🔒 Private account functionality
+- 📧 Email notifications settings
+
+</details>
+
+<details>
+<summary><b>📱 Post Management</b></summary>
+
+- 📷 Create posts with images and captions
+- 🖼️ Image upload with automatic resizing and validation
+- ❤️ Like/unlike posts with AJAX support
+- 🗑️ Soft delete functionality for posts
+- 🗜️ Image optimization (max 5MB, auto-resize)
+
+</details>
+
+<details>
+<summary><b>💬 Social Interactions</b></summary>
+
+- 📝 Comment system on posts
+- 👥 Follow/unfollow users
+- ⚡ Real-time like counts and interactions
+- 🔍 User search functionality
+
+</details>
+
+<details>
+<summary><b>🎨 Enhanced UI/UX</b></summary>
+
+- 📱 Responsive Bootstrap design
+- 🌙 Dark/Light mode toggle
+- 📄 Pagination for posts and profiles
+- 💬 Real-time feedback with messages
+- 🗺️ Mobile-optimized interface
+
+</details>
+
+<details>
+<summary><b>⚡ Performance & Security</b></summary>
+
+- 📊 Database query optimization with select_related/prefetch_related
+- 🗜️ Image compression and resizing
+- 🌍 Environment-based configuration
+- 🔒 CSRF protection and security headers
+- 📎 File upload validation and limits
+
+</details>
+
+<details>
+<summary><b>🛠 Admin Panel</b></summary>
+
+- 🖼️ Enhanced admin interface with thumbnails
+- ⚙️ Bulk actions and filtering
+- 📊 User statistics and content moderation
+- ⚡ Optimized admin queries
+
+</details>
+
+## 🚀 **Quick Start**
+
+### 📋 **Prerequisites**
+
+<table>
+<tr>
+<td><img width="20" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python"></td>
+<td><strong>Python 3.9+</strong></td>
+<td><img width="20" src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git"></td>
+<td><strong>Git</strong></td>
+</tr>
+<tr>
+<td>📦</td>
+<td><strong>pip</strong></td>
+<td>🌐</td>
+<td><strong>Virtual environment (recommended)</strong></td>
+</tr>
+</table>
+
+### 📺 **Installation Steps**
+
+<details open>
+<summary><b>1️⃣ Clone the Repository</b></summary>
+
 ```bash
-git clone <repository-url>
+git clone https://github.com/YOUR_USERNAME/FLICK.git
 cd FLICK
 ```
 
-### 2. Create Virtual Environment
+</details>
+
+<details open>
+<summary><b>2️⃣ Create Virtual Environment</b></summary>
+
 ```bash
 # Windows
 python -m venv .venv
@@ -88,13 +224,22 @@ python -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install Dependencies
+</details>
+
+<details open>
+<summary><b>3️⃣ Install Dependencies</b></summary>
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Environment Configuration
+</details>
+
+<details open>
+<summary><b>4️⃣ Environment Configuration</b></summary>
+
 Create a `.env` file in the root directory:
+
 ```env
 # Django Security Settings
 SECRET_KEY=your-secret-key-here
@@ -118,7 +263,11 @@ EMAIL_HOST_USER=your-email@gmail.com
 EMAIL_HOST_PASSWORD=your-app-password
 ```
 
-### 5. Database Setup
+</details>
+
+<details open>
+<summary><b>5️⃣ Database Setup</b></summary>
+
 ```bash
 # Create and apply migrations
 python manage.py makemigrations
@@ -128,47 +277,67 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-### 6. Collect Static Files (if needed)
+</details>
+
+<details>
+<summary><b>6️⃣ Collect Static Files (Production)</b></summary>
+
 ```bash
 python manage.py collectstatic
 ```
 
-### 7. Run Development Server
+</details>
+
+<details open>
+<summary><b>7️⃣ Run Development Server</b></summary>
+
 ```bash
 python manage.py runserver
 ```
 
-Visit `http://127.0.0.1:8000/` to see the application.
+🎉 **Visit** `http://127.0.0.1:8000/` **to see FLICK in action!**
 
-## 📁 Project Structure
+</details>
+
+## 🏧 **Project Structure**
+
+<details>
+<summary><b>Click to expand project tree</b></summary>
+
 ```
 FLICK/
-├── FLICK/               # Main project settings
-│   ├── settings.py      # Enhanced with environment variables
-│   ├── urls.py          # Main URL configuration
-│   └── wsgi.py
-├── posts/               # Posts app
-│   ├── models.py        # Post, Comment, Follow models
-│   ├── views.py         # Enhanced views with pagination
-│   ├── forms.py         # Enhanced forms with validation
-│   ├── admin.py         # Enhanced admin configuration
-│   └── urls.py
-├── users/               # Users app
-│   ├── models.py        # UserProfile model
-│   ├── views.py         # User authentication views
-│   ├── forms.py         # Enhanced user forms
-│   ├── admin.py         # Enhanced user admin
-│   └── urls.py
-├── templates/           # Global templates
-│   ├── base.html        # Base template with dark mode
-│   └── home.html        # Landing page
-├── static/              # Static files
-│   ├── css/            # Stylesheets
-│   └── images/         # Default images
-├── media/              # User uploads
-├── .env                # Environment variables
-└── requirements.txt    # Dependencies
+├── 📁 FLICK/                    # 🎯 Main project settings
+│   ├── ⚙️ settings.py           # Enhanced with environment variables
+│   ├── 🔗 urls.py               # Main URL configuration
+│   └── 🌐 wsgi.py              # WSGI application
+├── 📱 posts/                   # 📷 Posts application
+│   ├── 📊 models.py           # Post, Comment, Follow models
+│   ├── 👁️ views.py            # Enhanced views with pagination
+│   ├── 📝 forms.py            # Enhanced forms with validation
+│   ├── 🛠️ admin.py            # Enhanced admin configuration
+│   └── 🔗 urls.py              # Posts URL patterns
+├── 👤 users/                   # 👥 Users application
+│   ├── 📊 models.py           # UserProfile model
+│   ├── 🔐 views.py            # User authentication views
+│   ├── 📝 forms.py            # Enhanced user forms
+│   ├── 🛠️ admin.py            # Enhanced user admin
+│   └── 🔗 urls.py              # User URL patterns
+├── 🗃️ templates/              # 🎨 Global templates
+│   ├── 🏰 base.html           # Base template with FLICK theme
+│   └── 🏠 home.html           # Landing page
+├── 🎨 static/                  # ✨ Static files
+│   ├── 🗏️ css/                # FLICK stylesheets
+│   ├── ⚡ js/                 # FLICK animations
+│   └── 🖼️ images/            # Default images
+├── 📁 media/                  # 🖼️ User uploads
+├── 🌐 .env                    # Environment variables
+├── 📦 requirements.txt        # Python dependencies
+├── 📜 README.md               # Project documentation
+├── 📄 LICENSE                 # MIT License
+└── 🤝 CONTRIBUTING.md         # Contribution guidelines
 ```
+
+</details>
 
 ## 🔧 Configuration
 
@@ -272,10 +441,42 @@ For issues and questions:
 
 ---
 
-🎆 **Built with passion for modern web experiences**
+<div align="center">
+
+## 🎆 **Built with Passion**
+
+### *Modern Web Experiences for the Next Generation*
 
 **FLICK** - *Where every moment is worth sharing in a flick!* ⚡
 
+<br>
+
+<table>
+<tr>
+<td align="center">
+<strong>👨‍💻 Developer</strong><br>
+<a href="https://github.com/Saianiruddha">@Saianiruddha</a>
+</td>
+<td align="center">
+<strong>🔗 Repository</strong><br>
+<a href="https://github.com/Saianiruddha/FLICK">FLICK on GitHub</a>
+</td>
+<td align="center">
+<strong>📜 License</strong><br>
+<a href="./LICENSE">MIT License</a>
+</td>
+</tr>
+</table>
+
+<br>
+
+### 🌟 **Show Your Support**
+
+If you like FLICK, please ⭐ **star this repository** and share it with others!
+
+<br>
+
 **Happy Coding! 🎉**
-#   f l i c k - s o c i a l - m e d i a  
+
+</div>
  
